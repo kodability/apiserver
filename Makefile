@@ -11,6 +11,8 @@ image:
 sh:
 	docker run -it --rm $(IMAGE_NAME) /bin/bash
 
+compile:
+	@go build -v
 compile-linux64:
 	docker run --rm -v "$(BASE_DIR)":$(WORK_DIR) -w $(WORK_DIR) -e GOOS=linux -e GOARCH=amd64 golang:1.9 go build -v
 compile-win64:
