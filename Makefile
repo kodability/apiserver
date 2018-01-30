@@ -21,6 +21,6 @@ docker-run:
 build:
 	@go build -v
 run:
-	@go run main.go
+	@go build -v && ./$(BINARY_NAME)
 test:
 	@cd tests && go test
