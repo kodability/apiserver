@@ -16,3 +16,6 @@ tryout-runner
 
 # Database
 *.db3
+
+# IntelliJ
+/.idea

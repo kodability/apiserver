@@ -19,8 +19,8 @@ docker-run:
 	@docker run -it --rm -p 8080:8080 $(IMAGE_NAME) $(BINARY_IMAGE)
 
 build:
-	@go build -v
+	@go build -i -v
 run:
-	@go build -v && ./$(BINARY_NAME)
+	@go build -i -v && ./$(BINARY_NAME)
 test:
 	@cd tests && go test
