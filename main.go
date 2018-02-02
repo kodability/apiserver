@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"tryout-runner/db"
 	"tryout-runner/models"
 	_ "tryout-runner/routers"
@@ -10,6 +13,18 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
+// initialize log settings
+func initLogs() {
+	filename := beego.AppConfig.String("log.filename")
+	if filename != "" {
+		dir := filepath.Dir(filename)
+		if err := os.MkdirAll(dir, 0755); err == nil {
+			beego.SetLogger("file", fmt.Sprintf(`{"filename":"%s"}`, filename))
+		}
+	}
+}
+
+// migrate database
 func migrate() {
 	db.Conn.AutoMigrate(&models.Question{},
 		&models.QuestionDesc{},
@@ -19,6 +34,8 @@ func migrate() {
 }
 
 func main() {
+	initLogs()
+
 	conn, err := db.Connect()
 	if err != nil {
 		log.Fatal("Failed to connect to DB", err)
