@@ -26,7 +26,9 @@ func initLogs() {
 
 // migrate database
 func migrate() {
-	db.Conn.AutoMigrate(&models.Question{},
+	conn := db.Conn
+	conn.AutoMigrate(
+		&models.Question{},
 		&models.QuestionDesc{},
 		&models.QuestionCode{},
 		&models.QuestionTag{},
@@ -40,6 +42,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to connect to DB", err)
 	}
+	db.Conn.LogMode(true)
 
 	migrate()
 

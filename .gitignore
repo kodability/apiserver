@@ -22,3 +22,6 @@ tryout-runner
 
 # Log
 *.log
+
+# Temporary files
+*.tmp
