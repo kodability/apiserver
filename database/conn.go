@@ -27,11 +27,11 @@ func Connect() (*gorm.DB, error) {
 }
 
 func newSqlite3(filename string) (*gorm.DB, error) {
-	log.Printf("Connecting to DB : %s\n", filename)
+	log.Printf("Connecting to Sqlite3 DB : %s\n", filename)
 	return gorm.Open("sqlite3", filename)
 }
 
 func newMysql(dsn string) (*gorm.DB, error) {
-	log.Printf("Connecting to DB : %s\n", dsn)
+	log.Printf("Connecting to Mysql DB : %s\n", dsn)
 	return gorm.Open("mysql", dsn)
 }

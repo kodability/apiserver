@@ -16,9 +16,10 @@ func init() {
 	apppath, _ := filepath.Abs(filepath.Dir(filepath.Join(file, ".."+string(filepath.Separator))))
 	beego.TestBeegoInit(apppath)
 
-	db, err := database.Connect()
+	conn, err := database.Connect()
 	if err != nil {
 		log.Fatal("Failed to connect to DB", err)
 	}
-	db.AutoMigrate()
+	conn.LogMode(true)
+	database.AutoMigrate()
 }

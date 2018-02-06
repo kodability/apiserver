@@ -26,13 +26,13 @@ func initLogs() {
 func main() {
 	initLogs()
 
-	db, err := database.Connect()
+	conn, err := database.Connect()
 	if err != nil {
 		log.Fatal("Failed to connect to DB", err)
 	}
-	db.AutoMigrate()
+	database.AutoMigrate()
 
-	defer db.Close()
+	defer conn.Close()
 
 	beego.Run()
 }
