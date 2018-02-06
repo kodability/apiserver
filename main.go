@@ -5,8 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"tryout-runner/db"
-	"tryout-runner/models"
+	"tryout-runner/database"
 	_ "tryout-runner/routers"
 
 	"github.com/astaxie/beego"
@@ -24,29 +23,16 @@ func initLogs() {
 	}
 }
 
-// migrate database
-func migrate() {
-	conn := db.Conn
-	conn.AutoMigrate(
-		&models.Question{},
-		&models.QuestionDesc{},
-		&models.QuestionCode{},
-		&models.QuestionTag{},
-	)
-}
-
 func main() {
 	initLogs()
 
-	conn, err := db.Connect()
+	db, err := database.Connect()
 	if err != nil {
 		log.Fatal("Failed to connect to DB", err)
 	}
-	db.Conn.LogMode(true)
+	db.AutoMigrate()
 
-	migrate()
-
-	defer conn.Close()
+	defer db.Close()
 
 	beego.Run()
 }

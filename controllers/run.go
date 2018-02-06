@@ -13,12 +13,16 @@ type RunController struct {
 
 type RunBody struct {
 	QuestionID int
-	code       string
+	Code       string
 }
 
+// Post runs a tryout
 func (c *RunController) Post() {
 	var body RunBody
 	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
+	c.Ctx.Output.SetStatus(201)
+
+	// TODO: run a tryout
 	c.Data["json"] = map[string]string{"msg": "not implemented"}
 	c.ServeJSON()
 }

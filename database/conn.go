@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// Conn is a database handle representing a pool of zero or more underlying connections.
+// DB is a database handle representing a pool of zero or more underlying connections.
 // It's safe to concurrent use by multiple goroutines.
-var Conn *gorm.DB
+var DB *gorm.DB
 
 // Connect connect to database.
 // After successful connection, it's free to use 'Conn' variable
@@ -19,7 +19,7 @@ func Connect() (*gorm.DB, error) {
 	if dialect == "sqlite3" {
 		filename := beego.AppConfig.String("db.filename")
 		db, err := newSqlite3(filename)
-		Conn = db
+		DB = db
 		return db, err
 	}
 
