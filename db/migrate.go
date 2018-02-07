@@ -4,7 +4,7 @@ import "tryout-runner/models"
 
 // AutoMigrate migrates database
 func AutoMigrate() {
-	DB.AutoMigrate(
+	Conn.AutoMigrate(
 		&models.Question{},
 		&models.QuestionDesc{},
 		&models.QuestionCode{},
