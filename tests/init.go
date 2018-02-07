@@ -4,7 +4,7 @@ import (
 	"log"
 	"path/filepath"
 	"runtime"
-	"tryout-runner/database"
+	"tryout-runner/db"
 	_ "tryout-runner/routers"
 
 	"github.com/astaxie/beego"
@@ -16,10 +16,10 @@ func init() {
 	apppath, _ := filepath.Abs(filepath.Dir(filepath.Join(file, ".."+string(filepath.Separator))))
 	beego.TestBeegoInit(apppath)
 
-	conn, err := database.Connect()
+	conn, err := db.Connect()
 	if err != nil {
 		log.Fatal("Failed to connect to DB", err)
 	}
 	conn.LogMode(true)
-	database.AutoMigrate()
+	db.AutoMigrate()
 }

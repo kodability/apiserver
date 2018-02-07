@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"tryout-runner/database"
+	"tryout-runner/db"
 	_ "tryout-runner/routers"
 
 	"github.com/astaxie/beego"
@@ -26,11 +26,11 @@ func initLogs() {
 func main() {
 	initLogs()
 
-	conn, err := database.Connect()
+	conn, err := db.Connect()
 	if err != nil {
 		log.Fatal("Failed to connect to DB", err)
 	}
-	database.AutoMigrate()
+	db.AutoMigrate()
 
 	defer conn.Close()
 
