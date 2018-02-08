@@ -6,7 +6,7 @@ import "tryout-runner/models"
 func AutoMigrate() {
 	Conn.AutoMigrate(
 		&models.Question{},
-		&models.QuestionDesc{},
+		&models.QuestionDescription{},
 		&models.QuestionCode{},
 		&models.QuestionTag{},
 	)

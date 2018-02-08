@@ -36,24 +36,53 @@ type QuestionBody struct {
 func (c *QuestionController) Post() {
 	var body QuestionBody
 	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
-	c.Ctx.Output.SetStatus(201)
+
+	conn := db.Conn
+	tx := conn.Begin()
 
 	// Insert question
-	conn := db.Conn
 	question := models.Question{
 		Level:         body.Level,
 		EstimatedTime: body.EstimatedTime,
 		Tags:          body.Tags,
 		Demo:          body.Demo,
 	}
-	conn.Create(&question)
+	if err := tx.Create(&question).Error; err != nil {
+		tx.Rollback()
+		internalServerError(&c.Controller, err.Error())
+		return
+	}
 
 	// Insert QuestionDesc
-	// TODO
+	for _, desc := range body.Desc {
+		questionDesc := models.QuestionDescription{
+			QuestionID:  question.ID,
+			LocaleID:    desc.LocaleID,
+			Title:       desc.Title,
+			Description: desc.Desc,
+		}
+		if err := tx.Create(&questionDesc).Error; err != nil {
+			tx.Rollback()
+			internalServerError(&c.Controller, err.Error())
+			return
+		}
+	}
 
 	// Insert QuestionCode
-	// TODO
+	for _, code := range body.Codes {
+		questionCode := models.QuestionCode{
+			QuestionID: question.ID,
+			Lang:       code.Lang,
+			InitCode:   code.InitCode,
+			TestCode:   code.TestCode,
+		}
+		if err := tx.Create(&questionCode).Error; err != nil {
+			tx.Rollback()
+			internalServerError(&c.Controller, err.Error())
+			return
+		}
+	}
 
-	c.Data["json"] = map[string]string{"msg": "not implemented"}
-	c.ServeJSON()
+	tx.Commit()
+	jsonCreated(&c.Controller, nil)
 }
