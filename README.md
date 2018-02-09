@@ -2,7 +2,7 @@
 
 ## Build
 ### Without Docker
-Clone project into `$GOPATH/src/tryout-runner` directory.
+Clone project into `$GOPATH/src/github.com/kodability/tryout-runner` directory.
 
 Build an executable by running:
 ```bash
