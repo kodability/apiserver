@@ -19,7 +19,10 @@ func Connect() (*gorm.DB, error) {
 	if dialect == "sqlite3" {
 		filename := beego.AppConfig.String("db.filename")
 		db, err := newSqlite3(filename)
-		Conn = db
+		if err == nil {
+			initConnMode(db)
+			Conn = db
+		}
 		return db, err
 	}
 
@@ -34,4 +37,10 @@ func newSqlite3(filename string) (*gorm.DB, error) {
 func newMysql(dsn string) (*gorm.DB, error) {
 	log.Printf("Connecting to Mysql DB : %s\n", dsn)
 	return gorm.Open("mysql", dsn)
+}
+
+func initConnMode(db *gorm.DB) {
+	showsql := false
+	showsql, _ = beego.AppConfig.Bool("db.showsql")
+	db.LogMode(showsql)
 }

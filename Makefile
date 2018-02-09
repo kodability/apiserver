@@ -4,6 +4,8 @@ NAME=tryout-runner
 IMAGE_NAME=$(NAME)
 BINARY_NAME=$(NAME)
 WORK_DIR=/go/src/$(NAME)
+COVER_FILE=$(BASE_DIR)/coverage.out
+COVER_HTML=$(BASE_DIR)/coverage.html
 
 docker-image:
 	@docker build -t $(IMAGE_NAME) .
