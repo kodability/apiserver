@@ -28,3 +28,9 @@ prodrun:
 	@go build -i -v && BEEGO_RUNMODE=prod ./$(BINARY_NAME)
 test:
 	@cd tests && go test
+cover:
+	@cd tests && go test -cover -coverprofile=$(COVER_FILE) -coverpkg=../...
+cover-html: cover
+	@go tool cover -html=$(COVER_FILE) -o $(COVER_HTML)
+cover-std: cover
+	@go tool cover -func=$(COVER_FILE)
