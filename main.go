@@ -5,8 +5,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"tryout-runner/db"
-	_ "tryout-runner/routers"
+
+	"github.com/kodability/tryout-runner/db"
+	_ "github.com/kodability/tryout-runner/routers"
 
 	"github.com/astaxie/beego"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"

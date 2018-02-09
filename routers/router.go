@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"tryout-runner/controllers"
+	"github.com/kodability/tryout-runner/controllers"
 
 	"github.com/astaxie/beego"
 )

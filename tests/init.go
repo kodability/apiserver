@@ -3,7 +3,8 @@ package tests
 import (
 	"log"
 	"path/filepath"
-	"tryout-runner/db"
+
+	"github.com/kodability/tryout-runner/db"
 
 	"github.com/astaxie/beego"
 )

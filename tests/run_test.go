@@ -2,8 +2,9 @@ package tests
 
 import (
 	"testing"
-	"tryout-runner/controllers"
-	_ "tryout-runner/routers"
+
+	"github.com/kodability/tryout-runner/controllers"
+	_ "github.com/kodability/tryout-runner/routers"
 
 	"github.com/astaxie/beego"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"

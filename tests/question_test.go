@@ -2,10 +2,11 @@ package tests
 
 import (
 	"testing"
-	"tryout-runner/controllers"
-	"tryout-runner/db"
-	"tryout-runner/models"
-	_ "tryout-runner/routers"
+
+	"github.com/kodability/tryout-runner/controllers"
+	"github.com/kodability/tryout-runner/db"
+	"github.com/kodability/tryout-runner/models"
+	_ "github.com/kodability/tryout-runner/routers"
 
 	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"

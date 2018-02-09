@@ -1,6 +1,6 @@
 package db
 
-import "tryout-runner/models"
+import "github.com/kodability/tryout-runner/models"
 
 // AutoMigrate migrates database
 func AutoMigrate() {

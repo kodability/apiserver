@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
-	"tryout-runner/db"
-	"tryout-runner/models"
+
+	"github.com/kodability/tryout-runner/db"
+	"github.com/kodability/tryout-runner/models"
 
 	"github.com/astaxie/beego"
 )
