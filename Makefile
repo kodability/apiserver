@@ -24,5 +24,7 @@ build:
 	@go build -i -v
 run:
 	@go build -i -v && ./$(BINARY_NAME)
+prodrun:
+	@go build -i -v && BEEGO_RUNMODE=prod ./$(BINARY_NAME)
 test:
 	@cd tests && go test
