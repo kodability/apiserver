@@ -12,6 +12,13 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+func deleteQuestions() {
+	conn := db.Conn
+	conn.Delete(models.Question{})
+	conn.Delete(models.QuestionDescription{})
+	conn.Delete(models.QuestionCode{})
+}
+
 func TestPostQuestion(t *testing.T) {
 	enDesc := controllers.QuestionLocaleDesc{
 		LocaleID: "en",
@@ -34,25 +41,65 @@ func TestPostQuestion(t *testing.T) {
 		TestCode: "const fnTest = function() {}",
 	}
 
-	body := controllers.QuestionBody{
-		Level:         1,
-		EstimatedTime: 30,
-		Tags:          "tree,sort",
-		Demo:          true,
-		Desc:          []controllers.QuestionLocaleDesc{enDesc, koDesc},
-		Codes:         []controllers.QuestionLangCode{javaCode, javascriptCode},
-	}
-	req, rw, _ := makePostJSON("/api/v1/question", &body)
-	beego.BeeApp.Handlers.ServeHTTP(rw, req)
+	Convey("POST question", t, func() {
+		deleteQuestions()
+		body := controllers.QuestionBody{
+			Level:         1,
+			EstimatedTime: 30,
+			Tags:          "tree,sort",
+			Demo:          true,
+			Desc:          []controllers.QuestionLocaleDesc{enDesc, koDesc},
+			Codes:         []controllers.QuestionLangCode{javaCode, javascriptCode},
+		}
+		req, rw, _ := makePostJSON("/api/v1/question", &body)
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
 
-	Convey("POST question\n", t, func() {
 		Convey("StatusCode = 201", func() {
 			So(rw.Code, ShouldEqual, 201)
 		})
-		Convey("Inserted Question : 1", func() {
-			var actual []models.Question
-			db.Conn.Find(&actual)
-			So(len(actual), ShouldEqual, 1)
+		Convey("Inserted Question", func() {
+			var questions []models.Question
+			db.Conn.Find(&questions)
+			So(questions, ShouldHaveLength, 1)
+
+			question := questions[0]
+			So(map[string]interface{}{
+				"Level":         question.Level,
+				"EstimatedTime": question.EstimatedTime,
+				"Tags":          question.Tags,
+			}, ShouldResemble, map[string]interface{}{
+				"Level":         body.Level,
+				"EstimatedTime": body.EstimatedTime,
+				"Tags":          body.Tags,
+			})
+		})
+		Convey("Inserted QuestionDescription", func() {
+			var questionDescriptions []models.QuestionDescription
+			db.Conn.Find(&questionDescriptions)
+			So(questionDescriptions, ShouldHaveLength, 2)
+		})
+		Convey("Inserted QuestionCode", func() {
+			var questionCodes []models.QuestionCode
+			db.Conn.Find(&questionCodes)
+			So(questionCodes, ShouldHaveLength, 2)
+		})
+	})
+
+	Convey("POST question with empty desc", t, func() {
+		deleteQuestions()
+		body := controllers.QuestionBody{
+			Level:         1,
+			EstimatedTime: 30,
+			Tags:          "tree,sort",
+			Demo:          true,
+			Desc:          []controllers.QuestionLocaleDesc{},
+			Codes:         []controllers.QuestionLangCode{javaCode, javascriptCode},
+		}
+		req, rw, _ := makePostJSON("/api/v1/question", &body)
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 400", func() {
+			So(rw.Code, ShouldEqual, 400)
 		})
 	})
 }

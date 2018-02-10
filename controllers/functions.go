@@ -16,6 +16,10 @@ func jsonCreated(c *beego.Controller, value interface{}) {
 	c.ServeJSON()
 }
 
+func badRequest(c *beego.Controller, msg string) {
+	c.CustomAbort(400, msg)
+}
+
 func internalServerError(c *beego.Controller, msg string) {
 	c.CustomAbort(500, msg)
 }

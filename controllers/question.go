@@ -38,6 +38,12 @@ func (c *QuestionController) Post() {
 	var body QuestionBody
 	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
 
+	// Validate
+	if len(body.Desc) == 0 {
+		badRequest(&c.Controller, "desc cannot be empty")
+		return
+	}
+
 	conn := db.Conn
 	tx := conn.Begin()
 
