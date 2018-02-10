@@ -1,6 +1,6 @@
 # tryout-runner
-[![Coverage Status](https://coveralls.io/repos/github/kodability/tryout-runner/badge.svg?branch=develop)](https://coveralls.io/github/kodability/tryout-runner?branch=develop)
 [![Build Status](https://travis-ci.org/kodability/tryout-runner.svg?branch=develop)](https://travis-ci.org/kodability/tryout-runner)
+[![Coverage Status](https://coveralls.io/repos/github/kodability/tryout-runner/badge.svg?branch=develop)](https://coveralls.io/github/kodability/tryout-runner?branch=develop)
 
 ## Build
 ### Without Docker
