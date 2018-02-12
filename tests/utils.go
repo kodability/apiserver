@@ -9,7 +9,7 @@ import (
 
 // makeGet makes a GET request
 func makeGet(url string) (req *http.Request, write *httptest.ResponseRecorder, err error) {
-	r, e := http.NewRequest("GET", url, nil)
+	r, e := http.NewRequest(http.MethodGet, url, nil)
 	w := httptest.NewRecorder()
 	return r, w, e
 }
@@ -21,7 +21,7 @@ func makePostJSON(url string, body interface{}) (req *http.Request, write *httpt
 		return nil, nil, e
 	}
 
-	r, e := http.NewRequest("POST", url, bytes.NewBuffer(jsonValue))
+	r, e := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(jsonValue))
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 	return r, w, e

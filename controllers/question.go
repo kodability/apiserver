@@ -13,18 +13,21 @@ type QuestionController struct {
 	beego.Controller
 }
 
+// QuestionLocaleDesc defines question title and descriptions for given locale
 type QuestionLocaleDesc struct {
 	LocaleID string
 	Title    string
 	Desc     string
 }
 
+// QuestionLangCode defines code for given language.
 type QuestionLangCode struct {
 	Lang     string
 	InitCode string
 	TestCode string
 }
 
+// QuestionBody is a body struct for Post
 type QuestionBody struct {
 	Desc          []QuestionLocaleDesc
 	Codes         []QuestionLangCode
@@ -34,6 +37,7 @@ type QuestionBody struct {
 	Demo          bool
 }
 
+// Post a new question
 func (c *QuestionController) Post() {
 	var body QuestionBody
 	json.Unmarshal(c.Ctx.Input.RequestBody, &body)

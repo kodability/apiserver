@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/kodability/tryout-runner/controllers"
@@ -55,7 +56,7 @@ func TestPostQuestion(t *testing.T) {
 		beego.BeeApp.Handlers.ServeHTTP(rw, req)
 
 		Convey("StatusCode = 201", func() {
-			So(rw.Code, ShouldEqual, 201)
+			So(rw.Code, ShouldEqual, http.StatusCreated)
 		})
 		Convey("Inserted Question", func() {
 			var questions []models.Question
@@ -99,7 +100,7 @@ func TestPostQuestion(t *testing.T) {
 		beego.BeeApp.Handlers.ServeHTTP(rw, req)
 
 		Convey("StatusCode = 400", func() {
-			So(rw.Code, ShouldEqual, 400)
+			So(rw.Code, ShouldEqual, http.StatusBadRequest)
 		})
 	})
 }
