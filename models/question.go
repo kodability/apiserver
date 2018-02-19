@@ -25,8 +25,8 @@ type QuestionDescription struct {
 // QuestionCode contains initially provided source code and Test code.
 type QuestionCode struct {
 	gorm.Model
-	QuestionID uint   `gorm:"index"`
-	Lang       string `gorm:"type:varchar(10);not null;index"`
+	QuestionID uint   `gorm:"index;unique_index:question_code_uq"`
+	Lang       string `gorm:"type:varchar(10);not null;index;unique_index:question_code_uq"`
 	InitCode   string `gorm:"type:varchar(255)"`
 	TestCode   string `gorm:"type:varchar(30000)"`
 }
