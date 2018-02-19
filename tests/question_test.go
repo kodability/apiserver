@@ -1,6 +1,8 @@
 package tests
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -173,6 +175,34 @@ func TestPostQuestion(t *testing.T) {
 			var questionDescriptions []models.QuestionDescription
 			db.Conn.Find(&questionDescriptions)
 			So(questionDescriptions, ShouldHaveLength, 0)
+		})
+	})
+}
+
+func TestGetQuestionByID(t *testing.T) {
+	deleteQuestionsAndDescAndCodes()
+
+	question := models.Question{}
+	db.Conn.Create(&question)
+
+	Convey("GET : invalid ID", t, func() {
+		req, rw, _ := makeGet("/api/v1/question/0")
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 400", func() {
+			So(rw.Code, ShouldEqual, http.StatusBadRequest)
+		})
+	})
+
+	Convey("GET : valid ID", t, func() {
+		req, rw, _ := makeGet(fmt.Sprintf("/api/v1/question/%v", question.ID))
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 200", func() {
+			So(rw.Code, ShouldEqual, http.StatusOK)
+			var result models.Question
+			json.Unmarshal(rw.Body.Bytes(), &result)
+			So(result.ID, ShouldEqual, question.ID)
 		})
 	})
 }

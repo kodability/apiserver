@@ -2,16 +2,13 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/kodability/tryout-runner/db"
 	"github.com/kodability/tryout-runner/models"
 
 	"github.com/astaxie/beego"
 )
-
-type QuestionController struct {
-	beego.Controller
-}
 
 // QuestionLocaleDesc defines question title and descriptions for given locale
 type QuestionLocaleDesc struct {
@@ -35,6 +32,13 @@ type QuestionBody struct {
 	EstimatedTime int
 	Tags          string
 	Demo          bool
+}
+
+// =============================================================================
+
+// QuestionController defines questions http requests
+type QuestionController struct {
+	beego.Controller
 }
 
 // Post a new question
@@ -96,4 +100,26 @@ func (c *QuestionController) Post() {
 
 	tx.Commit()
 	jsonCreated(&c.Controller, nil)
+}
+
+// =============================================================================
+
+// QuestionIDController defines single question specific http requests
+type QuestionIDController struct {
+	beego.Controller
+}
+
+// Get question by ID
+func (c *QuestionIDController) Get() {
+	id := c.Ctx.Input.Param(":id")
+
+	conn := db.Conn
+
+	var question models.Question
+	if err := conn.Where("ID = ?", id).First(&question).Error; err != nil {
+		badRequest(&c.Controller, fmt.Sprintf("Question not found. ID=%v", id))
+		return
+	}
+
+	jsonOK(&c.Controller, question)
 }

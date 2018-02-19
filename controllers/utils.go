@@ -10,17 +10,25 @@ func setStatus(c *beego.Controller, statusCode int) {
 	c.Ctx.Output.SetStatus(statusCode)
 }
 
+func jsonWithStatus(c *beego.Controller, value interface{}, statusCode int) {
+	c.Data["json"] = value
+	setStatus(c, statusCode)
+	c.ServeJSON()
+}
+
 func setStatusOK(c *beego.Controller) {
 	setStatus(c, http.StatusOK)
 }
 
-func jsonCreated(c *beego.Controller, value interface{}) {
-	c.Data["json"] = value
-	setStatus(c, http.StatusCreated)
-	c.ServeJSON()
+func jsonOK(c *beego.Controller, value interface{}) {
+	jsonWithStatus(c, value, http.StatusOK)
 }
 
-func jsonNoContent(c *beego.Controller, value interface{}) {
+func jsonCreated(c *beego.Controller, value interface{}) {
+	jsonWithStatus(c, value, http.StatusCreated)
+}
+
+func noContent(c *beego.Controller, value interface{}) {
 	setStatus(c, http.StatusNoContent)
 }
 
