@@ -157,3 +157,26 @@ func (c *QuestionIDController) Delete() {
 
 	noContent(&c.Controller, nil)
 }
+
+// Put updates a question by ID
+func (c *QuestionIDController) Put() {
+	id := c.Ctx.Input.Param(":id")
+
+	var body map[string]interface{}
+	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
+
+	conn := db.Conn
+
+	// Find Question
+	var question models.Question
+	if err := conn.Where("id = ?", id).First(&question).Error; err != nil {
+		badRequest(&c.Controller, fmt.Sprintf("Question not found. id=%v", id))
+		return
+	}
+
+	if len(body) > 0 {
+		conn.Model(&question).Updates(body)
+	}
+
+	setStatusOK(&c.Controller)
+}

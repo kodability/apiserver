@@ -246,3 +246,41 @@ func TestDeleteQuestionByID(t *testing.T) {
 		})
 	})
 }
+
+func TestPutQuestionByID(t *testing.T) {
+	deleteQuestionsAndDescAndCodes()
+
+	question := models.Question{}
+	db.Conn.Create(&question)
+
+	Convey("PUT : invalid ID", t, func() {
+		req, rw, _ := makePutJSON("/api/v1/question/0", nil)
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 400", func() {
+			So(rw.Code, ShouldEqual, http.StatusBadRequest)
+		})
+	})
+
+	Convey("PUT : valid ID", t, func() {
+		body := map[string]interface{}{
+			"level":          2,
+			"estimated_time": 10,
+			"tags":           "A,B",
+			"demo":           true,
+		}
+		req, rw, _ := makePutJSON(fmt.Sprintf("/api/v1/question/%v", question.ID), body)
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 200", func() {
+			So(rw.Code, ShouldEqual, http.StatusOK)
+
+			var actual models.Question
+			db.Conn.Where("id = ?", question.ID).First(&actual)
+			So(actual.Level, ShouldEqual, body["level"])
+			So(actual.EstimatedTime, ShouldEqual, body["estimated_time"])
+			So(actual.Tags, ShouldEqual, body["tags"])
+			So(actual.Demo, ShouldEqual, body["demo"])
+		})
+	})
+}
