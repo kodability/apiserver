@@ -3,6 +3,7 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"testing"
 
@@ -203,6 +204,45 @@ func TestGetQuestionByID(t *testing.T) {
 			var result models.Question
 			json.Unmarshal(rw.Body.Bytes(), &result)
 			So(result.ID, ShouldEqual, question.ID)
+		})
+	})
+}
+
+func TestDeleteQuestionByID(t *testing.T) {
+	deleteQuestionsAndDescAndCodes()
+
+	question := models.Question{}
+	db.Conn.Create(&question)
+
+	koDesc := models.QuestionDescription{
+		QuestionID: question.ID,
+		LocaleID:   "ko",
+		Title:      "테스트",
+	}
+	javaCode := models.QuestionCode{
+		QuestionID: question.ID,
+		Lang:       "java",
+	}
+	db.Conn.Create(&koDesc)
+	db.Conn.Create(&javaCode)
+
+	Convey("DELETE : invalid ID", t, func() {
+		req, rw, _ := makeDelete("/api/v1/question/0")
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 204", func() {
+			log.Println(rw.Body)
+			So(rw.Code, ShouldEqual, http.StatusNoContent)
+		})
+	})
+
+	Convey("DELETE : valid ID", t, func() {
+		req, rw, _ := makeDelete(fmt.Sprintf("/api/v1/question/%v", question.ID))
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 204", func() {
+			log.Println(rw.Body)
+			So(rw.Code, ShouldEqual, http.StatusNoContent)
 		})
 	})
 }

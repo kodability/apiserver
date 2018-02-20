@@ -10,6 +10,8 @@ import (
 	"github.com/astaxie/beego"
 )
 
+// =============================================================================
+
 // QuestionLocaleDesc defines question title and descriptions for given locale
 type QuestionLocaleDesc struct {
 	LocaleID string
@@ -33,8 +35,6 @@ type QuestionBody struct {
 	Tags          string
 	Demo          bool
 }
-
-// =============================================================================
 
 // QuestionController defines questions http requests
 type QuestionController struct {
@@ -115,11 +115,45 @@ func (c *QuestionIDController) Get() {
 
 	conn := db.Conn
 
+	// Find Question
 	var question models.Question
-	if err := conn.Where("ID = ?", id).First(&question).Error; err != nil {
-		badRequest(&c.Controller, fmt.Sprintf("Question not found. ID=%v", id))
+	if err := conn.Where("id = ?", id).First(&question).Error; err != nil {
+		badRequest(&c.Controller, fmt.Sprintf("Question not found. id=%v", id))
 		return
 	}
 
 	jsonOK(&c.Controller, question)
+}
+
+// Delete question by ID
+func (c *QuestionIDController) Delete() {
+	id := c.Ctx.Input.Param(":id")
+
+	conn := db.Conn
+	tx := conn.Begin()
+
+	// Soft Delete Question
+	if err := tx.Where("id = ?", id).Delete(models.Question{}).Error; err != nil {
+		tx.Rollback()
+		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete Question: %v", err.Error()))
+		return
+	}
+
+	// Soft Delete QuestionDescription
+	if err := tx.Where("question_id = ?", id).Delete(models.QuestionDescription{}).Error; err != nil {
+		tx.Rollback()
+		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete QuestionDescription: %v", err.Error()))
+		return
+	}
+
+	// Soft Delete QuestionCode
+	if err := tx.Where("question_id = ?", id).Delete(models.QuestionCode{}).Error; err != nil {
+		tx.Rollback()
+		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete QuestionCode: %v", err.Error()))
+		return
+	}
+
+	tx.Commit()
+
+	noContent(&c.Controller, nil)
 }
