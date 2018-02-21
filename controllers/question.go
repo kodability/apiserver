@@ -26,8 +26,8 @@ type QuestionLangCode struct {
 	TestCode string
 }
 
-// QuestionBody is a body struct for Post
-type QuestionBody struct {
+// QuestionPostBody is a body struct for Post
+type QuestionPostBody struct {
 	Desc          []QuestionLocaleDesc
 	Codes         []QuestionLangCode
 	Level         int
@@ -43,7 +43,7 @@ type QuestionController struct {
 
 // Post a new question
 func (c *QuestionController) Post() {
-	var body QuestionBody
+	var body QuestionPostBody
 	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
 
 	// Validate
@@ -152,14 +152,20 @@ func (c *QuestionIDController) Delete() {
 	noContent(&c.Controller, nil)
 }
 
+type QuestionPutBody struct {
+	Level         *int
+	EstimatedTime *int
+	Tags          *string
+	Demo          *bool
+}
+
 // Put updates a question by ID
 func (c *QuestionIDController) Put() {
+	conn := db.Conn
 	id := c.Ctx.Input.Param(":id")
 
-	var body map[string]interface{}
+	var body QuestionPutBody
 	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
-
-	conn := db.Conn
 
 	// Find Question
 	var question models.Question
@@ -168,9 +174,20 @@ func (c *QuestionIDController) Put() {
 		return
 	}
 
-	if len(body) > 0 {
-		conn.Model(&question).Updates(body)
+	// Update fields
+	if body.Level != nil {
+		question.Level = *body.Level
 	}
+	if body.EstimatedTime != nil {
+		question.EstimatedTime = *body.EstimatedTime
+	}
+	if body.Tags != nil {
+		question.Tags = *body.Tags
+	}
+	if body.Demo != nil {
+		question.Demo = *body.Demo
+	}
+	conn.Model(&question).Updates(body)
 
 	setStatusOK(&c.Controller)
 }
