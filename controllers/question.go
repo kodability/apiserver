@@ -55,10 +55,34 @@ func (c *QuestionController) Post() {
 	conn := db.Conn
 	tx := conn.Begin()
 
+	// QuestionDescription
+	var descriptions []models.QuestionDescription
+	for _, desc := range body.Desc {
+		questionDesc := models.QuestionDescription{
+			LocaleID:    desc.LocaleID,
+			Title:       desc.Title,
+			Description: desc.Desc,
+		}
+		descriptions = append(descriptions, questionDesc)
+	}
+
+	// QuestionCode
+	var codes []models.QuestionCode
+	for _, code := range body.Codes {
+		questionCode := models.QuestionCode{
+			Lang:     code.Lang,
+			InitCode: code.InitCode,
+			TestCode: code.TestCode,
+		}
+		codes = append(codes, questionCode)
+	}
+
 	// Insert question
 	question := models.Question{
 		Level:         body.Level,
 		EstimatedTime: body.EstimatedTime,
+		Desctiptions:  descriptions,
+		Codes:         codes,
 		Tags:          body.Tags,
 		Demo:          body.Demo,
 	}
@@ -66,36 +90,6 @@ func (c *QuestionController) Post() {
 		tx.Rollback()
 		internalServerError(&c.Controller, err.Error())
 		return
-	}
-
-	// Insert QuestionDesc
-	for _, desc := range body.Desc {
-		questionDesc := models.QuestionDescription{
-			QuestionID:  question.ID,
-			LocaleID:    desc.LocaleID,
-			Title:       desc.Title,
-			Description: desc.Desc,
-		}
-		if err := tx.Create(&questionDesc).Error; err != nil {
-			tx.Rollback()
-			internalServerError(&c.Controller, err.Error())
-			return
-		}
-	}
-
-	// Insert QuestionCode
-	for _, code := range body.Codes {
-		questionCode := models.QuestionCode{
-			QuestionID: question.ID,
-			Lang:       code.Lang,
-			InitCode:   code.InitCode,
-			TestCode:   code.TestCode,
-		}
-		if err := tx.Create(&questionCode).Error; err != nil {
-			tx.Rollback()
-			internalServerError(&c.Controller, err.Error())
-			return
-		}
 	}
 
 	tx.Commit()
@@ -132,22 +126,22 @@ func (c *QuestionIDController) Delete() {
 	conn := db.Conn
 	tx := conn.Begin()
 
-	// Soft Delete Question
-	if err := tx.Where("id = ?", id).Delete(models.Question{}).Error; err != nil {
+	// Delete Question
+	if err := tx.Unscoped().Where("id = ?", id).Delete(models.Question{}).Error; err != nil {
 		tx.Rollback()
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete Question: %v", err.Error()))
 		return
 	}
 
-	// Soft Delete QuestionDescription
-	if err := tx.Where("question_id = ?", id).Delete(models.QuestionDescription{}).Error; err != nil {
+	// Delete QuestionDescription
+	if err := tx.Unscoped().Where("question_id = ?", id).Delete(models.QuestionDescription{}).Error; err != nil {
 		tx.Rollback()
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete QuestionDescription: %v", err.Error()))
 		return
 	}
 
-	// Soft Delete QuestionCode
-	if err := tx.Where("question_id = ?", id).Delete(models.QuestionCode{}).Error; err != nil {
+	// Delete QuestionCode
+	if err := tx.Unscoped().Where("question_id = ?", id).Delete(models.QuestionCode{}).Error; err != nil {
 		tx.Rollback()
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete QuestionCode: %v", err.Error()))
 		return

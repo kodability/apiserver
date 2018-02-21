@@ -18,9 +18,9 @@ import (
 
 func deleteQuestionsAndDescAndCodes() {
 	conn := db.Conn
-	conn.Delete(models.Question{})
-	conn.Delete(models.QuestionDescription{})
-	conn.Delete(models.QuestionCode{})
+	conn.Unscoped().Delete(models.Question{})
+	conn.Unscoped().Delete(models.QuestionDescription{})
+	conn.Unscoped().Delete(models.QuestionCode{})
 }
 
 func TestPostQuestion(t *testing.T) {
@@ -156,7 +156,7 @@ func TestPostQuestion(t *testing.T) {
 		})
 	})
 
-	Convey("POST question : desc insert error", t, func() {
+	Convey("POST question : duplicated desc insert error", t, func() {
 		deleteQuestionsAndDescAndCodes()
 		body := controllers.QuestionBody{
 			Level:         1,
