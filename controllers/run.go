@@ -13,6 +13,7 @@ type RunController struct {
 
 type RunBody struct {
 	QuestionID int
+	Lang       string
 	Code       string
 }
 

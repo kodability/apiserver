@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/kodability/tryout-runner/controllers"
+	c "github.com/kodability/tryout-runner/controllers"
 	"github.com/kodability/tryout-runner/db"
-	"github.com/kodability/tryout-runner/models"
+	m "github.com/kodability/tryout-runner/models"
 	_ "github.com/kodability/tryout-runner/routers"
 
 	"github.com/astaxie/beego"
@@ -18,28 +18,28 @@ import (
 
 func deleteQuestionsAndDescAndCodes() {
 	conn := db.Conn
-	conn.Unscoped().Delete(models.Question{})
-	conn.Unscoped().Delete(models.QuestionDescription{})
-	conn.Unscoped().Delete(models.QuestionCode{})
+	conn.Unscoped().Delete(m.Question{})
+	conn.Unscoped().Delete(m.QuestionDescription{})
+	conn.Unscoped().Delete(m.QuestionCode{})
 }
 
 func TestPostQuestion(t *testing.T) {
-	enDesc := controllers.QuestionLocaleDesc{
+	enDesc := c.QuestionLocaleDesc{
 		LocaleID: "en",
 		Title:    "test",
 		Desc:     "test description",
 	}
-	koDesc := controllers.QuestionLocaleDesc{
+	koDesc := c.QuestionLocaleDesc{
 		LocaleID: "ko",
 		Title:    "테스트",
 		Desc:     "테스트 설명",
 	}
-	javaCode := controllers.QuestionLangCode{
+	javaCode := c.QuestionLangCode{
 		Lang:     "java",
 		InitCode: "public class Main {}",
 		TestCode: "public class MainTest {}",
 	}
-	javascriptCode := controllers.QuestionLangCode{
+	javascriptCode := c.QuestionLangCode{
 		Lang:     "javascript",
 		InitCode: "const fn = function() {}",
 		TestCode: "const fnTest = function() {}",
@@ -47,13 +47,13 @@ func TestPostQuestion(t *testing.T) {
 
 	Convey("POST question", t, func() {
 		deleteQuestionsAndDescAndCodes()
-		body := controllers.QuestionPostBody{
+		body := c.QuestionPostBody{
 			Level:         1,
 			EstimatedTime: 30,
 			Tags:          "tree,sort",
 			Demo:          true,
-			Desc:          []controllers.QuestionLocaleDesc{enDesc, koDesc},
-			Codes:         []controllers.QuestionLangCode{javaCode, javascriptCode},
+			Desc:          []c.QuestionLocaleDesc{enDesc, koDesc},
+			Codes:         []c.QuestionLangCode{javaCode, javascriptCode},
 		}
 		req, rw, _ := makePostJSON("/api/v1/question", &body)
 		beego.BeeApp.Handlers.ServeHTTP(rw, req)
@@ -62,7 +62,7 @@ func TestPostQuestion(t *testing.T) {
 			So(rw.Code, ShouldEqual, http.StatusCreated)
 		})
 		Convey("Inserted Question", func() {
-			var questions []models.Question
+			var questions []m.Question
 			db.Conn.Find(&questions)
 			So(questions, ShouldHaveLength, 1)
 
@@ -78,12 +78,12 @@ func TestPostQuestion(t *testing.T) {
 			})
 		})
 		Convey("Inserted QuestionDescription", func() {
-			var questionDescriptions []models.QuestionDescription
+			var questionDescriptions []m.QuestionDescription
 			db.Conn.Find(&questionDescriptions)
 			So(questionDescriptions, ShouldHaveLength, 2)
 		})
 		Convey("Inserted QuestionCode", func() {
-			var questionCodes []models.QuestionCode
+			var questionCodes []m.QuestionCode
 			db.Conn.Find(&questionCodes)
 			So(questionCodes, ShouldHaveLength, 2)
 		})
@@ -91,13 +91,13 @@ func TestPostQuestion(t *testing.T) {
 
 	Convey("POST question with empty desc", t, func() {
 		deleteQuestionsAndDescAndCodes()
-		body := controllers.QuestionPostBody{
+		body := c.QuestionPostBody{
 			Level:         1,
 			EstimatedTime: 30,
 			Tags:          "tree,sort",
 			Demo:          true,
-			Desc:          []controllers.QuestionLocaleDesc{},
-			Codes:         []controllers.QuestionLangCode{javaCode, javascriptCode},
+			Desc:          []c.QuestionLocaleDesc{},
+			Codes:         []c.QuestionLangCode{javaCode, javascriptCode},
 		}
 		req, rw, _ := makePostJSON("/api/v1/question", &body)
 		beego.BeeApp.Handlers.ServeHTTP(rw, req)
@@ -109,13 +109,13 @@ func TestPostQuestion(t *testing.T) {
 
 	Convey("POST question with empty code", t, func() {
 		deleteQuestionsAndDescAndCodes()
-		body := controllers.QuestionPostBody{
+		body := c.QuestionPostBody{
 			Level:         1,
 			EstimatedTime: 30,
 			Tags:          "tree,sort",
 			Demo:          true,
-			Desc:          []controllers.QuestionLocaleDesc{enDesc},
-			Codes:         []controllers.QuestionLangCode{},
+			Desc:          []c.QuestionLocaleDesc{enDesc},
+			Codes:         []c.QuestionLangCode{},
 		}
 		req, rw, _ := makePostJSON("/api/v1/question", &body)
 		beego.BeeApp.Handlers.ServeHTTP(rw, req)
@@ -124,7 +124,7 @@ func TestPostQuestion(t *testing.T) {
 			So(rw.Code, ShouldEqual, http.StatusCreated)
 		})
 		Convey("Inserted QuestionDescription", func() {
-			var questionDescriptions []models.QuestionDescription
+			var questionDescriptions []m.QuestionDescription
 			db.Conn.Find(&questionDescriptions)
 			So(questionDescriptions, ShouldHaveLength, 1)
 		})
@@ -132,13 +132,13 @@ func TestPostQuestion(t *testing.T) {
 
 	Convey("POST question : code insert error", t, func() {
 		deleteQuestionsAndDescAndCodes()
-		body := controllers.QuestionPostBody{
+		body := c.QuestionPostBody{
 			Level:         1,
 			EstimatedTime: 30,
 			Tags:          "tree,sort",
 			Demo:          true,
-			Desc:          []controllers.QuestionLocaleDesc{enDesc},
-			Codes:         []controllers.QuestionLangCode{javaCode, javaCode},
+			Desc:          []c.QuestionLocaleDesc{enDesc},
+			Codes:         []c.QuestionLangCode{javaCode, javaCode},
 		}
 		req, rw, _ := makePostJSON("/api/v1/question", &body)
 		beego.BeeApp.Handlers.ServeHTTP(rw, req)
@@ -147,8 +147,8 @@ func TestPostQuestion(t *testing.T) {
 			So(rw.Code, ShouldEqual, http.StatusInternalServerError)
 		})
 		Convey("Empty QuestionCode and QuestionDesc", func() {
-			var questionCodes []models.QuestionCode
-			var questionDescriptions []models.QuestionDescription
+			var questionCodes []m.QuestionCode
+			var questionDescriptions []m.QuestionDescription
 			db.Conn.Find(&questionCodes)
 			db.Conn.Find(&questionDescriptions)
 			So(questionCodes, ShouldHaveLength, 0)
@@ -158,13 +158,13 @@ func TestPostQuestion(t *testing.T) {
 
 	Convey("POST question : duplicated desc insert error", t, func() {
 		deleteQuestionsAndDescAndCodes()
-		body := controllers.QuestionPostBody{
+		body := c.QuestionPostBody{
 			Level:         1,
 			EstimatedTime: 30,
 			Tags:          "tree,sort",
 			Demo:          true,
-			Desc:          []controllers.QuestionLocaleDesc{enDesc, enDesc},
-			Codes:         []controllers.QuestionLangCode{},
+			Desc:          []c.QuestionLocaleDesc{enDesc, enDesc},
+			Codes:         []c.QuestionLangCode{},
 		}
 		req, rw, _ := makePostJSON("/api/v1/question", &body)
 		beego.BeeApp.Handlers.ServeHTTP(rw, req)
@@ -173,7 +173,7 @@ func TestPostQuestion(t *testing.T) {
 			So(rw.Code, ShouldEqual, http.StatusInternalServerError)
 		})
 		Convey("Empty QuestionDesc", func() {
-			var questionDescriptions []models.QuestionDescription
+			var questionDescriptions []m.QuestionDescription
 			db.Conn.Find(&questionDescriptions)
 			So(questionDescriptions, ShouldHaveLength, 0)
 		})
@@ -183,7 +183,7 @@ func TestPostQuestion(t *testing.T) {
 func TestGetQuestionByID(t *testing.T) {
 	deleteQuestionsAndDescAndCodes()
 
-	question := models.Question{}
+	question := m.Question{}
 	db.Conn.Create(&question)
 
 	Convey("GET : invalid ID", t, func() {
@@ -201,7 +201,7 @@ func TestGetQuestionByID(t *testing.T) {
 
 		Convey("StatusCode = 200", func() {
 			So(rw.Code, ShouldEqual, http.StatusOK)
-			var result models.Question
+			var result m.Question
 			json.Unmarshal(rw.Body.Bytes(), &result)
 			So(result.ID, ShouldEqual, question.ID)
 		})
@@ -211,15 +211,15 @@ func TestGetQuestionByID(t *testing.T) {
 func TestDeleteQuestionByID(t *testing.T) {
 	deleteQuestionsAndDescAndCodes()
 
-	question := models.Question{}
+	question := m.Question{}
 	db.Conn.Create(&question)
 
-	koDesc := models.QuestionDescription{
+	koDesc := m.QuestionDescription{
 		QuestionID: question.ID,
 		LocaleID:   "ko",
 		Title:      "테스트",
 	}
-	javaCode := models.QuestionCode{
+	javaCode := m.QuestionCode{
 		QuestionID: question.ID,
 		Lang:       "java",
 	}
@@ -250,7 +250,7 @@ func TestDeleteQuestionByID(t *testing.T) {
 func TestPutQuestionByID(t *testing.T) {
 	deleteQuestionsAndDescAndCodes()
 
-	question := models.Question{}
+	question := m.Question{}
 	db.Conn.Create(&question)
 
 	Convey("PUT : invalid ID", t, func() {
@@ -275,7 +275,7 @@ func TestPutQuestionByID(t *testing.T) {
 		Convey("StatusCode = 200", func() {
 			So(rw.Code, ShouldEqual, http.StatusOK)
 
-			var actual models.Question
+			var actual m.Question
 			db.Conn.Where("id = ?", question.ID).First(&actual)
 			So(actual.Level, ShouldEqual, body["level"])
 			So(actual.EstimatedTime, ShouldEqual, body["estimatedTime"])

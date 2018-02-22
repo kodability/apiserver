@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/kodability/tryout-runner/db"
-	"github.com/kodability/tryout-runner/models"
+	. "github.com/kodability/tryout-runner/models"
 
 	"github.com/astaxie/beego"
 )
@@ -54,9 +54,9 @@ func (c *QuestionController) AddQuestion() {
 	tx := conn.Begin()
 
 	// QuestionDescription
-	var descriptions []models.QuestionDescription
+	var descriptions []QuestionDescription
 	for _, desc := range body.Desc {
-		questionDesc := models.QuestionDescription{
+		questionDesc := QuestionDescription{
 			LocaleID:    desc.LocaleID,
 			Title:       desc.Title,
 			Description: desc.Desc,
@@ -65,9 +65,9 @@ func (c *QuestionController) AddQuestion() {
 	}
 
 	// QuestionCode
-	var codes []models.QuestionCode
+	var codes []QuestionCode
 	for _, code := range body.Codes {
-		questionCode := models.QuestionCode{
+		questionCode := QuestionCode{
 			Lang:     code.Lang,
 			InitCode: code.InitCode,
 			TestCode: code.TestCode,
@@ -76,7 +76,7 @@ func (c *QuestionController) AddQuestion() {
 	}
 
 	// Insert question
-	question := models.Question{
+	question := Question{
 		Level:         body.Level,
 		EstimatedTime: body.EstimatedTime,
 		Desctiptions:  descriptions,
@@ -101,7 +101,7 @@ func (c *QuestionController) GetQuestionByID() {
 	conn := db.Conn
 
 	// Find Question
-	var question models.Question
+	var question Question
 	if err := conn.Where("id = ?", id).First(&question).Error; err != nil {
 		badRequest(&c.Controller, fmt.Sprintf("Question not found. id=%v", id))
 		return
@@ -118,21 +118,21 @@ func (c *QuestionController) DeleteQuestionByID() {
 	tx := conn.Begin()
 
 	// Delete Question
-	if err := tx.Unscoped().Where("id = ?", id).Delete(models.Question{}).Error; err != nil {
+	if err := tx.Unscoped().Where("id = ?", id).Delete(Question{}).Error; err != nil {
 		tx.Rollback()
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete Question: %v", err.Error()))
 		return
 	}
 
 	// Delete QuestionDescription
-	if err := tx.Unscoped().Where("question_id = ?", id).Delete(models.QuestionDescription{}).Error; err != nil {
+	if err := tx.Unscoped().Where("question_id = ?", id).Delete(QuestionDescription{}).Error; err != nil {
 		tx.Rollback()
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete QuestionDescription: %v", err.Error()))
 		return
 	}
 
 	// Delete QuestionCode
-	if err := tx.Unscoped().Where("question_id = ?", id).Delete(models.QuestionCode{}).Error; err != nil {
+	if err := tx.Unscoped().Where("question_id = ?", id).Delete(QuestionCode{}).Error; err != nil {
 		tx.Rollback()
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete QuestionCode: %v", err.Error()))
 		return
@@ -159,7 +159,7 @@ func (c *QuestionController) UpdateQuestion() {
 	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
 
 	// Find Question
-	var question models.Question
+	var question Question
 	if err := conn.Where("id = ?", id).First(&question).Error; err != nil {
 		badRequest(&c.Controller, fmt.Sprintf("Question not found. id=%v", id))
 		return
