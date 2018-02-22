@@ -10,8 +10,6 @@ import (
 	"github.com/astaxie/beego"
 )
 
-// =============================================================================
-
 // QuestionLocaleDesc defines question title and descriptions for given locale
 type QuestionLocaleDesc struct {
 	LocaleID string
@@ -41,8 +39,8 @@ type QuestionController struct {
 	beego.Controller
 }
 
-// Post a new question
-func (c *QuestionController) Post() {
+// Add a new question
+func (c *QuestionController) AddQuestion() {
 	var body QuestionPostBody
 	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
 
@@ -96,15 +94,8 @@ func (c *QuestionController) Post() {
 	jsonCreated(&c.Controller, nil)
 }
 
-// =============================================================================
-
-// QuestionIDController defines single question specific http requests
-type QuestionIDController struct {
-	beego.Controller
-}
-
 // Get question by ID
-func (c *QuestionIDController) Get() {
+func (c *QuestionController) GetQuestionByID() {
 	id := c.Ctx.Input.Param(":id")
 
 	conn := db.Conn
@@ -120,7 +111,7 @@ func (c *QuestionIDController) Get() {
 }
 
 // Delete question by ID
-func (c *QuestionIDController) Delete() {
+func (c *QuestionController) DeleteQuestionByID() {
 	id := c.Ctx.Input.Param(":id")
 
 	conn := db.Conn
@@ -159,8 +150,8 @@ type QuestionPutBody struct {
 	Demo          *bool
 }
 
-// Put updates a question by ID
-func (c *QuestionIDController) Put() {
+// Update a question
+func (c *QuestionController) UpdateQuestion() {
 	conn := db.Conn
 	id := c.Ctx.Input.Param(":id")
 

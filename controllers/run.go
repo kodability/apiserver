@@ -16,8 +16,8 @@ type RunBody struct {
 	Code       string
 }
 
-// Post runs a tryout
-func (c *RunController) Post() {
+// Run a tryout
+func (c *RunController) RunTryout() {
 	var body RunBody
 	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
 	c.Ctx.Output.SetStatus(201)

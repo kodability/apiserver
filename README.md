@@ -42,3 +42,14 @@ Run application inside docker container:
 ```bash
 $ make docker-run
 ```
+
+
+## Development
+### Visual Studio Code
+By default, vscode settings are added in `.vscode` directory.
+
+[gometalinter](https://github.com/alecthomas/gometalinter) is used for lint.
+
+```bash
+$ go get -u gopkg.in/alecthomas/gometalinter.v2
+```
