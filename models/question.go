@@ -1,10 +1,9 @@
 package models
 
-import "github.com/jinzhu/gorm"
-
 // Question defines a table that describes each tryout question.
 type Question struct {
-	gorm.Model
+	SurrogateModel
+	AuditModel
 	Level         int
 	EstimatedTime int
 	Desctiptions  []QuestionDescription `gorm:"ForeignKey:QuestionID"`
@@ -15,7 +14,7 @@ type Question struct {
 
 // QuestionDescription defines title and description for each locale
 type QuestionDescription struct {
-	gorm.Model
+	AuditModel
 	QuestionID  uint   `gorm:"index;unique_index:question_desc_uq"`
 	LocaleID    string `gorm:"type:varchar(10);not null;unique_index:question_desc_uq"`
 	Title       string `gorm:"type:varchar(100);not null"`
@@ -24,7 +23,7 @@ type QuestionDescription struct {
 
 // QuestionCode contains initially provided source code and Test code.
 type QuestionCode struct {
-	gorm.Model
+	AuditModel
 	QuestionID uint   `gorm:"index;unique_index:question_code_uq"`
 	Lang       string `gorm:"type:varchar(10);not null;index;unique_index:question_code_uq"`
 	InitCode   string `gorm:"type:varchar(255)"`
@@ -33,7 +32,7 @@ type QuestionCode struct {
 
 // QuestionTag defines tag
 type QuestionTag struct {
-	gorm.Model
+	AuditModel
 	Tag      string `gorm:"type:varchar(20);not null;unique_index:question_tag_uq"`
 	LocaleID string `gorm:"type:varchar(10);not null;unique_index:question_tag_uq"`
 	Name     string `gorm:"type:varchar(30)"`
