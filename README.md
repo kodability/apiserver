@@ -19,14 +19,9 @@ Create a docker image before build.
 $ make docker-image
 ```
 
-Build system specific executables using docker:
+Build linux-x64 executable using docker:
 ```bash
-# compile x64-linux
-$ make docker-linux64
-# compile x64-windows
-$ make docker-win64
-# compile x64-osx
-$ make docker-osx
+$ make docker-build
 ```
 
 ## Run
