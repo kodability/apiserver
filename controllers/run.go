@@ -17,10 +17,13 @@ type RunBody struct {
 	Code       string
 }
 
-// Run a tryout
+// RunTryout runs a tryout
 func (c *RunController) RunTryout() {
 	var body RunBody
-	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &body); err != nil {
+		badRequest(&c.Controller, err.Error())
+		return
+	}
 	c.Ctx.Output.SetStatus(201)
 
 	// TODO: run a tryout

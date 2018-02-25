@@ -284,3 +284,151 @@ func TestPutQuestionByID(t *testing.T) {
 		})
 	})
 }
+
+func TestGetQuestionCode(t *testing.T) {
+	deleteQuestionsAndDescAndCodes()
+
+	javaCode := m.QuestionCode{
+		QuestionID: 1,
+		Lang:       "java",
+		InitCode:   "public class Main {}",
+		TestCode:   "public class MainTest {}",
+	}
+	db.Conn.Create(&javaCode)
+
+	Convey("GET : invalid lang", t, func() {
+		req, rw, _ := makeGet("/api/v1/question/9999/code/cpp")
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 400", func() {
+			So(rw.Code, ShouldEqual, http.StatusBadRequest)
+		})
+	})
+
+	Convey("GET : get QuestionCode", t, func() {
+		req, rw, _ := makeGet("/api/v1/question/1/code/java")
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 200", func() {
+			So(rw.Code, ShouldEqual, http.StatusOK)
+
+			var actual m.QuestionCode
+			db.Conn.Where("question_id = ? AND lang= ?", javaCode.QuestionID, javaCode.Lang).First(&actual)
+			So(actual.QuestionID, ShouldEqual, javaCode.QuestionID)
+			So(actual.Lang, ShouldEqual, javaCode.Lang)
+			So(actual.InitCode, ShouldEqual, javaCode.InitCode)
+			So(actual.TestCode, ShouldEqual, javaCode.TestCode)
+		})
+	})
+}
+
+func TestDeleteQuestionCode(t *testing.T) {
+	deleteQuestionsAndDescAndCodes()
+
+	javaCode := m.QuestionCode{
+		QuestionID: 1,
+		Lang:       "java",
+		InitCode:   "public class Main {}",
+		TestCode:   "public class MainTest {}",
+	}
+	db.Conn.Create(&javaCode)
+
+	Convey("DELETE : invalid lang", t, func() {
+		req, rw, _ := makeDelete("/api/v1/question/1/code/cpp")
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 400", func() {
+			So(rw.Code, ShouldEqual, http.StatusBadRequest)
+		})
+	})
+
+	Convey("DELETE : delete QuestionCode", t, func() {
+		req, rw, _ := makeDelete("/api/v1/question/1/code/java")
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 204", func() {
+			So(rw.Code, ShouldEqual, http.StatusNoContent)
+
+			var questionCodes []m.QuestionCode
+			var count uint
+			db.Conn.Where("question_id = ? AND lang= ?", javaCode.QuestionID, javaCode.Lang).Find(&questionCodes).Count(&count)
+			So(count, ShouldEqual, 0)
+		})
+	})
+}
+
+func TestPostQuestionCode(t *testing.T) {
+	deleteQuestionsAndDescAndCodes()
+
+	// Add a question
+	question := m.Question{}
+	db.Conn.Create(&question)
+
+	Convey("POST : invalid questionID", t, func() {
+		req, rw, _ := makePostJSON("/api/v1/question/9999/code", nil)
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 400", func() {
+			So(rw.Code, ShouldEqual, http.StatusBadRequest)
+		})
+	})
+
+	Convey("POST : add QuestionCode", t, func() {
+		questionID := question.ID
+		body := map[string]interface{}{
+			"lang":     "java",
+			"initCode": "init code",
+			"testCode": "test code",
+		}
+		req, rw, _ := makePostJSON(fmt.Sprintf("/api/v1/question/%d/code", questionID), body)
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 201", func() {
+			So(rw.Code, ShouldEqual, http.StatusCreated)
+
+			var actual m.QuestionCode
+			db.Conn.Where("question_id = ? AND lang= ?", questionID, body["lang"]).First(&actual)
+			So(actual.InitCode, ShouldEqual, body["initCode"])
+			So(actual.TestCode, ShouldEqual, body["testCode"])
+		})
+	})
+}
+
+func TestPutQuestionCode(t *testing.T) {
+	deleteQuestionsAndDescAndCodes()
+
+	javaCode := m.QuestionCode{
+		QuestionID: 1,
+		Lang:       "java",
+		InitCode:   "public class Main {}",
+		TestCode:   "public class MainTest {}",
+	}
+	db.Conn.Create(&javaCode)
+
+	Convey("PUT : invalid lang", t, func() {
+		req, rw, _ := makePutJSON("/api/v1/question/1/code/cpp", nil)
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 400", func() {
+			So(rw.Code, ShouldEqual, http.StatusBadRequest)
+		})
+	})
+
+	Convey("PUT : update QuestionCode", t, func() {
+		body := map[string]interface{}{
+			"initCode": "init code",
+			"testCode": "test code",
+		}
+		req, rw, _ := makePutJSON("/api/v1/question/1/code/java", body)
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
+
+		Convey("StatusCode = 200", func() {
+			So(rw.Code, ShouldEqual, http.StatusOK)
+
+			var actual m.QuestionCode
+			db.Conn.Where("question_id = ? AND lang= ?", javaCode.QuestionID, javaCode.Lang).First(&actual)
+			So(actual.InitCode, ShouldEqual, body["initCode"])
+			So(actual.TestCode, ShouldEqual, body["testCode"])
+		})
+	})
+}

@@ -3,16 +3,15 @@ package routers
 import (
 	beecontext "github.com/astaxie/beego/context"
 
-	. "github.com/kodability/tryout-runner/controllers"
-
 	"github.com/astaxie/beego"
+	"github.com/kodability/tryout-runner/controllers"
 )
 
 func init() {
-	beego.Router("/", &MainController{})
+	beego.Router("/", &controllers.MainController{})
 
-	qc := &QuestionController{}
-	rc := &RunController{}
+	qc := &controllers.QuestionController{}
+	rc := &controllers.RunController{}
 
 	ns := beego.NewNamespace("/api/v1",
 		beego.NSCond(func(ctx *beecontext.Context) bool {
@@ -21,6 +20,8 @@ func init() {
 		beego.NSNamespace("/question",
 			beego.NSRouter("/", qc, "post:AddQuestion"),
 			beego.NSRouter("/:id:int", qc, "get:GetQuestionByID;delete:DeleteQuestionByID;put:UpdateQuestion"),
+			beego.NSRouter("/:id:int/code", qc, "post:AddQuestionCode"),
+			beego.NSRouter("/:id:int/code/:lang", qc, "get:GetQuestionCode;delete:DeleteQuestionCode;put:UpdateQuestionCode"),
 		),
 		beego.NSNamespace("/run",
 			beego.NSRouter("/", rc, "post:RunTryout"),
