@@ -1,13 +1,10 @@
-FROM golang:1.9
+FROM golang:1.10
 
 LABEL maintainer="kodability"
 LABEL name="kodability tryout runner"
 
-RUN mkdir -p /go/src/tryout-runner
-WORKDIR /go/src/tryout-runner
+RUN mkdir -p /go/src/github.com/kodability/tryout-runner
+WORKDIR /go/src/github.com/kodability/tryout-runner
 COPY . .
-
-RUN go-wrapper download
-RUN go-wrapper install
 
 CMD "tryout-runner"
