@@ -117,25 +117,29 @@ func (c *QuestionController) GetQuestionByID() {
 func (c *QuestionController) DeleteQuestionByID() {
 	id := c.Ctx.Input.Param(":id")
 
+	var err error
 	conn := db.Conn
 	tx := conn.Begin()
 
 	// Delete Question
-	if err := tx.Unscoped().Where("id = ?", id).Delete(m.Question{}).Error; err != nil {
+	err = tx.Unscoped().Where("id = ?", id).Delete(m.Question{}).Error
+	if err != nil {
 		tx.Rollback()
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete Question: %v", err.Error()))
 		return
 	}
 
 	// Delete QuestionDescription
-	if err := tx.Unscoped().Where("question_id = ?", id).Delete(m.QuestionDescription{}).Error; err != nil {
+	err = tx.Unscoped().Where("question_id = ?", id).Delete(m.QuestionDescription{}).Error
+	if err != nil {
 		tx.Rollback()
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete QuestionDescription: %v", err.Error()))
 		return
 	}
 
 	// Delete QuestionCode
-	if err := tx.Unscoped().Where("question_id = ?", id).Delete(m.QuestionCode{}).Error; err != nil {
+	err = tx.Unscoped().Where("question_id = ?", id).Delete(m.QuestionCode{}).Error
+	if err != nil {
 		tx.Rollback()
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete QuestionCode: %v", err.Error()))
 		return
@@ -159,7 +163,10 @@ func (c *QuestionController) UpdateQuestion() {
 	id := c.Ctx.Input.Param(":id")
 
 	var body QuestionPutBody
-	json.Unmarshal(c.Ctx.Input.RequestBody, &body)
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &body); err != nil {
+		badRequest(&c.Controller, "Failed to parse body")
+		return
+	}
 
 	// Find Question
 	var question m.Question
@@ -192,8 +199,10 @@ func (c *QuestionController) GetQuestionCode() {
 	questionID, _ := strconv.Atoi(c.Ctx.Input.Param(":id"))
 	lang := c.Ctx.Input.Param(":lang")
 
+	var err error
 	var questionCode m.QuestionCode
-	if err := conn.Where("question_id = ? AND lang = ?", questionID, lang).First(&questionCode).Error; err != nil {
+	err = conn.Where("question_id = ? AND lang = ?", questionID, lang).First(&questionCode).Error
+	if err != nil {
 		badRequest(&c.Controller, fmt.Sprintf("QuestionCode not found: %v", err.Error()))
 		return
 	}
@@ -203,26 +212,31 @@ func (c *QuestionController) GetQuestionCode() {
 
 // AddQuestionCode adds a new question code
 func (c *QuestionController) AddQuestionCode() {
+	var err error
+
 	conn := db.Conn
 	questionID, _ := strconv.Atoi(c.Ctx.Input.Param(":id"))
 
 	// Find question
 	var question m.Question
-	if err := conn.Where("id = ?", questionID).First(&question).Error; err != nil {
+	err = conn.Where("id = ?", questionID).First(&question).Error
+	if err != nil {
 		badRequest(&c.Controller, fmt.Sprintf("Question not found. id=%v", questionID))
 		return
 	}
 
 	// Parse body
 	var questionCode m.QuestionCode
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &questionCode); err != nil {
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &questionCode)
+	if err != nil {
 		badRequest(&c.Controller, fmt.Sprintf("Failed to parse body : %v", err.Error()))
 		return
 	}
 	questionCode.QuestionID = uint(questionID)
 
 	// Insert
-	if err := conn.Create(&questionCode).Error; err != nil {
+	err = conn.Create(&questionCode).Error
+	if err != nil {
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to add QuestionCode: %v", err.Error()))
 		return
 	}
@@ -232,24 +246,29 @@ func (c *QuestionController) AddQuestionCode() {
 
 // UpdateQuestionCode updates a question code
 func (c *QuestionController) UpdateQuestionCode() {
+	var err error
+
 	conn := db.Conn
 	questionID, _ := strconv.Atoi(c.Ctx.Input.Param(":id"))
 	lang := c.Ctx.Input.Param(":lang")
 
 	var body map[string]interface{}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &body); err != nil {
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &body)
+	if err != nil {
 		badRequest(&c.Controller, fmt.Sprintf("Failed to parse body : %v", err.Error()))
 		return
 	}
 
 	var questionCode m.QuestionCode
-	if err := conn.Where("question_id = ? AND lang = ?", questionID, lang).First(&questionCode).Error; err != nil {
+	err = conn.Where("question_id = ? AND lang = ?", questionID, lang).First(&questionCode).Error
+	if err != nil {
 		badRequest(&c.Controller, fmt.Sprintf("QuestionCode not found: %v", err.Error()))
 		return
 	}
 
-	// TODO: use questionCode instance
-	if err := conn.Model(&questionCode).Where("question_id = ? AND lang = ?", questionID, lang).Updates(body).Error; err != nil {
+	// Update question code
+	err = conn.Model(&questionCode).Where("question_id = ? AND lang = ?", questionID, lang).Updates(body).Error
+	if err != nil {
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to update QuestionCode: %v", err.Error()))
 		return
 	}
@@ -259,19 +278,22 @@ func (c *QuestionController) UpdateQuestionCode() {
 
 // DeleteQuestionCode deletes a question code
 func (c *QuestionController) DeleteQuestionCode() {
+	var err error
 	conn := db.Conn
 	questionID, _ := strconv.Atoi(c.Ctx.Input.Param(":id"))
 	lang := c.Ctx.Input.Param(":lang")
 
 	// Find matching QuestionCode
 	var questionCode m.QuestionCode
-	if err := conn.Where("question_id = ? AND lang = ?", questionID, lang).First(&questionCode).Error; err != nil {
+	err = conn.Where("question_id = ? AND lang = ?", questionID, lang).First(&questionCode).Error
+	if err != nil {
 		badRequest(&c.Controller, fmt.Sprintf("QuestionCode not found (questionId=%v, lang=%v). %v", questionID, lang, err.Error()))
 		return
 	}
 
 	// Delete QuestionCode
-	if err := conn.Delete(&questionCode).Error; err != nil {
+	err = conn.Delete(&questionCode).Error
+	if err != nil {
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to delete QuestionCode: %v", err.Error()))
 		return
 	}
