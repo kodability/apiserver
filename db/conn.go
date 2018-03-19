@@ -25,6 +25,15 @@ func Connect() (*gorm.DB, error) {
 		}
 		return db, err
 	}
+	if dialect == "mysql" {
+		dsn := beego.AppConfig.String("db.dsn")
+		db, err := newMysql(dsn)
+		if err == nil {
+			initConnMode(db)
+			Conn = db
+		}
+		return db, err
+	}
 
 	return nil, fmt.Errorf("Unknown dialect: %s", dialect)
 }
