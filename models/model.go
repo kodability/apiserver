@@ -46,5 +46,5 @@ type Tryout struct {
 	QuestionID uint
 	Lang       string
 	Code       string
-	RunAt      time.Time
+	CreatedAt  time.Time
 }

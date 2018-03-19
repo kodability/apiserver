@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/kodability/tryout-runner/db"
-	_ "github.com/kodability/tryout-runner/routers"
+	"github.com/kodability/apiserver/db"
+	_ "github.com/kodability/apiserver/routers"
 
 	"github.com/astaxie/beego"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"

@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"testing"
 
-	c "github.com/kodability/tryout-runner/controllers"
-	"github.com/kodability/tryout-runner/db"
-	m "github.com/kodability/tryout-runner/models"
-	_ "github.com/kodability/tryout-runner/routers"
+	c "github.com/kodability/apiserver/controllers"
+	"github.com/kodability/apiserver/db"
+	m "github.com/kodability/apiserver/models"
+	_ "github.com/kodability/apiserver/routers"
 
 	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"

@@ -4,7 +4,7 @@ import (
 	beecontext "github.com/astaxie/beego/context"
 
 	"github.com/astaxie/beego"
-	"github.com/kodability/tryout-runner/controllers"
+	"github.com/kodability/apiserver/controllers"
 )
 
 func init() {

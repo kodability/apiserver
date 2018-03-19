@@ -1,10 +1,10 @@
 FROM golang:1.10
 
 LABEL maintainer="kodability"
-LABEL name="kodability tryout runner"
+LABEL name="kodability API server"
 
-RUN mkdir -p /go/src/github.com/kodability/tryout-runner
-WORKDIR /go/src/github.com/kodability/tryout-runner
+RUN mkdir -p /go/src/github.com/kodability/apiserver
+WORKDIR /go/src/github.com/kodability/apiserver
 COPY . .
 
-CMD "tryout-runner"
+CMD "apiserver"

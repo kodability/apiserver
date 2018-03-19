@@ -1,10 +1,10 @@
-# tryout-runner
-[![Build Status](https://travis-ci.org/kodability/tryout-runner.svg?branch=develop)](https://travis-ci.org/kodability/tryout-runner)
-[![Coverage Status](https://coveralls.io/repos/github/kodability/tryout-runner/badge.svg?branch=develop)](https://coveralls.io/github/kodability/tryout-runner?branch=develop)
+# API Server
+[![Build Status](https://travis-ci.org/kodability/apiserver.svg?branch=develop)](https://travis-ci.org/kodability/apiserver)
+[![Coverage Status](https://coveralls.io/repos/github/kodability/apiserver/badge.svg?branch=develop)](https://coveralls.io/github/kodability/apiserver?branch=develop)
 
 ## Build
 ### Without Docker
-Clone project into `$GOPATH/src/github.com/kodability/tryout-runner` directory.
+Clone project into `$GOPATH/src/github.com/kodability/apiserver` directory.
 
 Build an executable by running:
 ```bash

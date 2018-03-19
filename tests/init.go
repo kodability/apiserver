@@ -4,7 +4,7 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/kodability/tryout-runner/db"
+	"github.com/kodability/apiserver/db"
 
 	"github.com/astaxie/beego"
 )

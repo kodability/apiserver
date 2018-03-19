@@ -4,7 +4,7 @@
 *.so
 *.dylib
 *.upx
-tryout-runner
+apiserver
 
 # Test
 *.test

@@ -4,4 +4,6 @@
         "--config=${workspaceRoot}/.gometalinter"
     ],
     "go.lintOnSave": "off"
+    ],
+    "editor.minimap.enabled": false
 }

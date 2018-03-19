@@ -1,6 +1,6 @@
 BASE_DIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
-NAME=tryout-runner
+NAME=apiserver
 IMAGE_NAME=$(NAME)
 BINARY_NAME=$(NAME)
 WORK_DIR=/go/src/github.com/kodability/$(NAME)
