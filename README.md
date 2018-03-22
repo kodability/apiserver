@@ -4,7 +4,10 @@
 
 ## Build
 ### Without Docker
-Clone project into `$GOPATH/src/github.com/kodability/apiserver` directory.
+Clone project by running:
+```bash
+$ go get github.com/kodability/apiserver
+```
 
 Build an executable by running:
 ```bash
