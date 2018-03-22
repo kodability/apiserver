@@ -31,6 +31,13 @@ func (c *RunController) RunTryout() {
 	var err error
 	conn := db.Conn
 
+	// Find QuestionCode
+	var questionCode models.QuestionCode
+	if err := conn.Where("question_id = ? AND lang = ?", body.QuestionID, body.Lang).First(&questionCode).Error; err != nil {
+		badRequest(&c.Controller, fmt.Sprintf("Question not found. id=%v", body.QuestionID))
+		return
+	}
+
 	// Save Tryout
 	tryout := models.Tryout{
 		QuestionID: body.QuestionID,
@@ -40,6 +47,13 @@ func (c *RunController) RunTryout() {
 	err = conn.Create(&tryout).Error
 	if err != nil {
 		internalServerError(&c.Controller, fmt.Sprintf("Failed to add Tryout: %v", err.Error()))
+		return
+	}
+
+	// Run Tryout
+	err = runTest(tryout.Lang, body.Code, questionCode.TestCode)
+	if err != nil {
+		internalServerError(&c.Controller, fmt.Sprintf("Failed to run Tryout: %v", err.Error()))
 		return
 	}
 

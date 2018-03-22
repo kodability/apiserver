@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"testing"
 
 	c "github.com/kodability/apiserver/controllers"
@@ -63,6 +64,8 @@ func TestRun(t *testing.T) {
 		}
 		r, w, _ := makePostJSON("/api/v1/run", runBody)
 		beego.BeeApp.Handlers.ServeHTTP(w, r)
+
+		fmt.Printf("%v", w)
 
 		Convey("StatusCode = 201", func() {
 			So(w.Code, ShouldEqual, 201)
