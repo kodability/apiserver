@@ -1,8 +1,11 @@
 package tests
 
 import (
-	"fmt"
+	"encoding/json"
+	"log"
 	"testing"
+
+	"github.com/kodability/apiserver/services/run"
 
 	c "github.com/kodability/apiserver/controllers"
 	"github.com/kodability/apiserver/db"
@@ -32,6 +35,7 @@ class TestExample {
 	void test1() {
 		assertEquals(55, new Example().sum(1, 10))
 	}
+	@Test
 	void test2() {
 		assertEquals(1, new Example().sum(1, 1))
 	}
@@ -42,6 +46,20 @@ class TestExample {
 func TestRun(t *testing.T) {
 	deleteQuestionsAndDescAndCodes()
 
+	if beego.AppConfig.String("tryout.runner") == "mock" {
+		c.SetTryoutRunner(&run.TryoutMockRunner{
+			Err: nil,
+			Result: &run.JUnitReport{
+				Tests:       2,
+				ElapsedTime: 1,
+				TestResults: []run.JUnitTestcaseResult{
+					run.JUnitTestcaseResult{Name: "test1"},
+					run.JUnitTestcaseResult{Name: "test1"},
+				},
+			},
+		})
+	}
+
 	// Create a question
 	groovyQuestionCode := createGroovyQuestionCode()
 	question := m.Question{
@@ -49,7 +67,7 @@ func TestRun(t *testing.T) {
 	}
 	db.Conn.Create(&question)
 
-	Convey("POST run\n", t, func() {
+	Convey("When POST run", t, func() {
 		deleteTryouts()
 
 		runBody := c.RunBody{
@@ -62,15 +80,27 @@ func TestRun(t *testing.T) {
 				}
 			}`,
 		}
-		r, w, _ := makePostJSON("/api/v1/run", runBody)
-		beego.BeeApp.Handlers.ServeHTTP(w, r)
+		req, rw, _ := makePostJSON("/api/v1/run", runBody)
+		beego.BeeApp.Handlers.ServeHTTP(rw, req)
 
-		fmt.Printf("%v", w)
-
-		Convey("StatusCode = 201", func() {
-			So(w.Code, ShouldEqual, 201)
+		Convey("Then StatusCode = 201 & TryoutResult response", func() {
+			log.Println(rw)
+			So(rw.Code, ShouldEqual, 201)
+			var result m.TryoutResult
+			json.Unmarshal(rw.Body.Bytes(), &result)
+			So(map[string]interface{}{
+				"TestCount":    result.TestCount,
+				"ErrorCount":   result.ErrorCount,
+				"FailureCount": result.FailureCount,
+				"ErrorMsg":     "",
+			}, ShouldResemble, map[string]interface{}{
+				"TestCount":    2,
+				"ErrorCount":   0,
+				"FailureCount": 0,
+				"ErrorMsg":     "",
+			})
 		})
-		Convey("Inserted Tryout", func() {
+		Convey("Then Tryout inserted", func() {
 			var tryouts []m.Tryout
 			db.Conn.Find(&tryouts)
 			So(tryouts, ShouldHaveLength, 1)

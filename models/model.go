@@ -48,3 +48,16 @@ type Tryout struct {
 	Code       string
 	CreatedAt  time.Time
 }
+
+type TryoutResult struct {
+	Tryout       Tryout `gorm:"foreignKey:TryoutID"`
+	TryoutID     uint
+	TestCount    int
+	ErrorCount   int
+	ErrorNames   string `gorm:"type:varchar(1000)"`
+	FailureCount int
+	FailureNames string `gorm:"type:varchar(1000)"`
+	ElapsedTime  float64
+	ErrorMsg     string `gorm:"type:varchar(255)"`
+	CreatedAt    time.Time
+}

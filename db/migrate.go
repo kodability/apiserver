@@ -10,5 +10,6 @@ func AutoMigrate() {
 		&QuestionCode{},
 		&QuestionTag{},
 		&Tryout{},
+		&TryoutResult{},
 	)
 }
