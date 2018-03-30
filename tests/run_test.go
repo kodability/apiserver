@@ -118,3 +118,110 @@ func TestRun(t *testing.T) {
 		})
 	})
 }
+
+func TestJUnitReport(t *testing.T) {
+	Convey("go", t, func() {
+		Convey("test_go_ok", func() {
+			report, err := run.ReadJunitReportFile("./tests/resources/test_go_ok.xml", true)
+			So(err, ShouldBeNil)
+			So(report, ShouldResemble, &run.JUnitReport{
+				Tests:       1,
+				Errors:      0,
+				Failures:    0,
+				ElapsedTime: 0.003,
+				TestResults: []run.JUnitTestcaseResult{
+					run.JUnitTestcaseResult{
+						Name:  "TestSum",
+						Time:  0.002,
+						Error: "",
+					},
+				},
+			})
+		})
+		Convey("test_go_failure", func() {
+			report, err := run.ReadJunitReportFile("./tests/resources/test_go_failure.xml", true)
+			So(err, ShouldBeNil)
+			So(report, ShouldResemble, &run.JUnitReport{
+				Tests:       1,
+				Errors:      0,
+				Failures:    1,
+				ElapsedTime: 0,
+				TestResults: []run.JUnitTestcaseResult{
+					run.JUnitTestcaseResult{
+						Name:  "[build failed]",
+						Time:  0,
+						Error: "Failed",
+					},
+				},
+			})
+		})
+	})
+	Convey("groovy", t, func() {
+		Convey("test_groovy_ok", func() {
+			report, err := run.ReadJunitReportFile("./tests/resources/test_groovy_ok.xml", false)
+			So(err, ShouldBeNil)
+			So(report, ShouldResemble, &run.JUnitReport{
+				Tests:       2,
+				Errors:      0,
+				Failures:    0,
+				ElapsedTime: 0.087,
+				TestResults: []run.JUnitTestcaseResult{
+					run.JUnitTestcaseResult{
+						Name:  "test2",
+						Time:  0.002,
+						Error: "",
+					},
+					run.JUnitTestcaseResult{
+						Name:  "test1",
+						Time:  0.085,
+						Error: "",
+					},
+				},
+			})
+		})
+		Convey("test_groovy_error", func() {
+			report, err := run.ReadJunitReportFile("./tests/resources/test_groovy_error.xml", false)
+			So(err, ShouldBeNil)
+			So(report, ShouldResemble, &run.JUnitReport{
+				Tests:       2,
+				Errors:      1,
+				Failures:    0,
+				ElapsedTime: 0.109,
+				TestResults: []run.JUnitTestcaseResult{
+					run.JUnitTestcaseResult{
+						Name:  "test2",
+						Time:  0,
+						Error: "expected:<2> but was:<1>",
+					},
+					run.JUnitTestcaseResult{
+						Name:  "test1",
+						Time:  0.109,
+						Error: "",
+					},
+				},
+			})
+		})
+		Convey("test_groovy_failure", func() {
+			report, err := run.ReadJunitReportFile("./tests/resources/test_groovy_failure.xml", false)
+			So(err, ShouldBeNil)
+			So(report, ShouldResemble, &run.JUnitReport{
+				Tests:       2,
+				Errors:      0,
+				Failures:    2,
+				ElapsedTime: 0.072,
+				TestResults: []run.JUnitTestcaseResult{
+					run.JUnitTestcaseResult{
+						Name:  "test1",
+						Time:  0.072,
+						Error: "Cannot cast object 'foo' with class 'java.lang.String' to class 'int'",
+					},
+					run.JUnitTestcaseResult{
+						Name:  "test2",
+						Time:  0,
+						Error: "Cannot cast object 'foo' with class 'java.lang.String' to class 'int'",
+					},
+				},
+			})
+		})
+	})
+}

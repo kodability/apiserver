@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite errors="0" failures="1" name="ExampleTestCase-20180329122403" skipped="0" tests="1" time="0.003">
+	<testcase classname="ExampleTestCase" name="test_sum" time="0.003">
+		<failure message="551 != 55.0" type="AssertionError">
+<![CDATA[Traceback (most recent call last):
+  File "/test/src/example_test.py", line 7, in test_sum
+    self.assertEqual(551, sum(1, 10))
+AssertionError: 551 != 55.0
+]]>		</failure>
+	</testcase>
+	<system-out>
+<![CDATA[]]>	</system-out>
+	<system-err>
+<![CDATA[]]>	</system-err>
+</testsuite>

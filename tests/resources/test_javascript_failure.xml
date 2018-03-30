@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.003" tests="2" failures="2">
+  <testsuite name="Root Suite" timestamp="2018-03-29T12:19:07" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Root Suite" timestamp="2018-03-29T12:19:07" tests="2" file="/test/test/exampleSpec.js" failures="2" time="0.003">
+    <testcase name="test1" time="0.003" classname="test1">
+      <failure><![CDATA[AssertionError [ERR_ASSERTION]: Infinity == 55
+    at Context.<anonymous> (test/exampleSpec.js:7:16)]]></failure>
+    </testcase>
+    <testcase name="test2" time="0" classname="test2">
+      <failure><![CDATA[AssertionError [ERR_ASSERTION]: Infinity == 1
+    at Context.<anonymous> (test/exampleSpec.js:10:16)]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

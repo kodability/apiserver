@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+	<testsuite tests="1" failures="1" time="0.000" name="command-line-arguments">
+		<properties>
+			<property name="go.version" value="go1.9.2"></property>
+		</properties>
+		<testcase classname="command-line-arguments" name="[build failed]" time="0.000">
+			<failure message="Failed" type="">src/example.go:5:1: missing return at end of function</failure>
+		</testcase>
+	</testsuite>
+</testsuites>

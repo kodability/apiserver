@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite errors="1" failures="0" name="ExampleTestCase-20180329122325" skipped="0" tests="1" time="0.005">
+	<testcase classname="ExampleTestCase" name="test_sum" time="0.005">
+		<error message="division by zero" type="ZeroDivisionError">
+<![CDATA[Traceback (most recent call last):
+  File "/test/src/example_test.py", line 7, in test_sum
+    self.assertEqual(55, sum(1, 10))
+  File "/test/src/example.py", line 2, in sum
+    return (value_from + value_to) * (value_to - value_from + 1) / 0
+ZeroDivisionError: division by zero
+]]>		</error>
+	</testcase>
+	<system-out>
+<![CDATA[]]>	</system-out>
+	<system-err>
+<![CDATA[]]>	</system-err>
+</testsuite>

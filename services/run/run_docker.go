@@ -90,7 +90,7 @@ func runGo(code, testCode string, dir string) (*JUnitReport, error) {
 	}
 
 	// read report file
-	return readJunitReportFromDir(reportDir)
+	return ReadJunitReportFromDir(reportDir, true)
 }
 
 // run groovy test
@@ -124,7 +124,7 @@ func runGroovy(code, testCode string, dir string) (*JUnitReport, error) {
 	}
 
 	// read report file
-	return readJunitReportFromDir(reportDir)
+	return ReadJunitReportFromDir(reportDir, false)
 }
 
 // run java test
@@ -158,7 +158,7 @@ func runJava(code, testCode string, dir string) (*JUnitReport, error) {
 	}
 
 	// read report file
-	return readJunitReportFromDir(reportDir)
+	return ReadJunitReportFromDir(reportDir, false)
 }
 
 // run javascript test
@@ -194,7 +194,7 @@ func runJavascript(code, testCode string, dir string) (*JUnitReport, error) {
 	}
 
 	// read report file
-	return readJunitReportFromDir(reportDir)
+	return ReadJunitReportFromDir(reportDir, true)
 }
 
 // run python test
@@ -228,7 +228,7 @@ func runPython(code, testCode string, dir string) (*JUnitReport, error) {
 	}
 
 	// read report file
-	return readJunitReportFromDir(reportDir)
+	return ReadJunitReportFromDir(reportDir, false)
 }
 
 // run scala test
@@ -262,5 +262,5 @@ func runScala(code, testCode string, dir string) (*JUnitReport, error) {
 	}
 
 	// read report file
-	return readJunitReportFromDir(reportDir)
+	return ReadJunitReportFromDir(reportDir, false)
 }
