@@ -30,6 +30,9 @@ prodrun: build
 
 test:
 	@cd tests && go test -v
+test-run:
+	@cd tests && go test -v init.go utils.go run_test.go
+	
 cover:
 	@cd tests && go test -covermode=count -coverprofile=$(COVER_FILE) -coverpkg=../...
 cover-html: cover

@@ -60,21 +60,18 @@ func ReadJunitReportBytes(bytes []byte, useTestSuites bool) (*JUnitReport, error
 	}
 
 	type JUnitError struct {
-		XMLName xml.Name `xml:"error"`
-		Message string   `xml:"message,attr"`
-		Type    string   `xml:"type,attr"`
-		Output  string   `xml:",chardata"`
+		Message string `xml:"message,attr,omitempty"`
+		Type    string `xml:"type,attr,omitempty"`
+		Output  string `xml:",chardata"`
 	}
 
 	type JUnitFailure struct {
-		XMLName xml.Name `xml:"failure"`
-		Message string   `xml:"message,attr"`
-		Type    string   `xml:"type,attr"`
-		Output  string   `xml:",chardata"`
+		Message string `xml:"message,attr,omitempty"`
+		Type    string `xml:"type,attr,omitempty"`
+		Output  string `xml:",chardata"`
 	}
 
 	type JUnitTestcase struct {
-		XMLName   xml.Name      `xml:"testcase"`
 		ClassName string        `xml:"classname,attr"`
 		Name      string        `xml:"name,attr"`
 		Time      float64       `xml:"time,attr"`
@@ -83,20 +80,25 @@ func ReadJunitReportBytes(bytes []byte, useTestSuites bool) (*JUnitReport, error
 	}
 
 	type JUnitTestSuite struct {
-		XMLName    xml.Name        `xml:"testsuite"`
-		Tests      int             `xml:"tests,attr"`
+		Tests      int             `xml:"tests,attr,omitempty"`
 		Failures   int             `xml:"failures,attr,omitempty"`
 		Errors     int             `xml:"errors,attr,omitempty"`
 		Skipped    int             `xml:"skipped,attr,omitempty"`
 		Time       float64         `xml:"time,attr,omitempty"`
+		Timestamp  string          `xml:"timestamp,attr,omitempty"`
+		File       string          `xml:"file,attr,omitempty"`
 		Name       string          `xml:"name,attr,omitempty"`
 		Properties []JUnitProperty `xml:"properties>property,omitempty"`
 		Testcases  []JUnitTestcase `xml:"testcase,omitempty"`
 	}
 
 	type JUnitTestSuites struct {
-		XMLName xml.Name         `xml:"testsuites"`
-		Suites  []JUnitTestSuite `xml:"testsuite,omitempty"`
+		Tests    int              `xml:"tests,attr,omitempty"`
+		Failures int              `xml:"failures,attr,omitempty"`
+		Errors   int              `xml:"errors,attr,omitempty"`
+		Time     float64          `xml:"time,attr,omitempty"`
+		Name     string           `xml:"name,attr,omitempty"`
+		Suites   []JUnitTestSuite `xml:"testsuite,omitempty"`
 	}
 
 	// Parse XML
@@ -106,8 +108,10 @@ func ReadJunitReportBytes(bytes []byte, useTestSuites bool) (*JUnitReport, error
 		if err := xml.Unmarshal(bytes, &testSuites); err != nil {
 			return nil, err
 		}
-		if len(testSuites.Suites) >= 1 {
-			testSuite = testSuites.Suites[0]
+		for _, suite := range testSuites.Suites {
+			if suite.Tests > 0 {
+				testSuite = suite
+			}
 		}
 	} else {
 		if err := xml.Unmarshal(bytes, &testSuite); err != nil {
@@ -124,6 +128,9 @@ func ReadJunitReportBytes(bytes []byte, useTestSuites bool) (*JUnitReport, error
 		}
 		if testcase.Failure != nil {
 			errorMsg = testcase.Failure.Message
+			if errorMsg == "" {
+				errorMsg = testcase.Failure.Output
+			}
 		}
 		testResults = append(testResults, JUnitTestcaseResult{
 			Name:  testcase.Name,

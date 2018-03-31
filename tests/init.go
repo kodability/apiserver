@@ -4,9 +4,9 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/kodability/apiserver/db"
-
 	"github.com/astaxie/beego"
+	"github.com/kodability/apiserver/db"
+	m "github.com/kodability/apiserver/models"
 )
 
 func init() {
@@ -22,4 +22,11 @@ func init() {
 	}
 
 	db.AutoMigrate()
+}
+
+func deleteQuestionsAndDescAndCodes() {
+	conn := db.Conn
+	conn.Unscoped().Delete(m.Question{})
+	conn.Unscoped().Delete(m.QuestionDescription{})
+	conn.Unscoped().Delete(m.QuestionCode{})
 }

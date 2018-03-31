@@ -3,7 +3,6 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"testing"
 
@@ -15,13 +14,6 @@ import (
 	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"
 )
-
-func deleteQuestionsAndDescAndCodes() {
-	conn := db.Conn
-	conn.Unscoped().Delete(m.Question{})
-	conn.Unscoped().Delete(m.QuestionDescription{})
-	conn.Unscoped().Delete(m.QuestionCode{})
-}
 
 func TestPostQuestion(t *testing.T) {
 	enDesc := c.QuestionLocaleDesc{
@@ -231,7 +223,6 @@ func TestDeleteQuestionByID(t *testing.T) {
 		beego.BeeApp.Handlers.ServeHTTP(rw, req)
 
 		Convey("StatusCode = 204", func() {
-			log.Println(rw.Body)
 			So(rw.Code, ShouldEqual, http.StatusNoContent)
 		})
 	})
@@ -241,7 +232,6 @@ func TestDeleteQuestionByID(t *testing.T) {
 		beego.BeeApp.Handlers.ServeHTTP(rw, req)
 
 		Convey("StatusCode = 204", func() {
-			log.Println(rw.Body)
 			So(rw.Code, ShouldEqual, http.StatusNoContent)
 		})
 	})
