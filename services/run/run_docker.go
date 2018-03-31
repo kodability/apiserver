@@ -39,7 +39,7 @@ func (r *TryoutDockerRunner) Run(lang, code, testCode string) (*JUnitReport, err
 	if lang == "scala" {
 		return runScala(code, testCode, tempDir)
 	}
-	return nil, fmt.Errorf("Unknown language: %s", lang)
+	return nil, fmt.Errorf("unknown language: %s", lang)
 }
 
 type DockerRunContext struct {

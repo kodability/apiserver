@@ -120,7 +120,7 @@ func ReadJunitReportBytes(bytes []byte, useTestSuites bool) (*JUnitReport, error
 	}
 
 	// Create JUnitReport instance
-	testResults := []JUnitTestcaseResult{}
+	var testResults []JUnitTestcaseResult
 	for _, testcase := range testSuite.Testcases {
 		errorMsg := ""
 		if testcase.Error != nil {
@@ -157,7 +157,7 @@ func ReadJunitReportFromDir(dir string, testSuites bool) (*JUnitReport, error) {
 	}
 
 	if len(filenames) == 0 {
-		return nil, fmt.Errorf("Junit report file not found in : %s", dir)
+		return nil, fmt.Errorf("junit report file not found in : %s", dir)
 	}
 
 	return ReadJunitReportFile(filenames[0], testSuites)

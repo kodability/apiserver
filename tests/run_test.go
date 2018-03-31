@@ -52,8 +52,8 @@ func TestRun(t *testing.T) {
 				Tests:       2,
 				ElapsedTime: 1,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test1"},
-					run.JUnitTestcaseResult{Name: "test1"},
+					{Name: "test1"},
+					{Name: "test2"},
 				},
 			},
 		})
@@ -126,7 +126,7 @@ func TestJUnitReport(t *testing.T) {
 				Tests:       1,
 				ElapsedTime: 0.003,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "TestSum", Time: 0.002, Error: ""},
+					{Name: "TestSum", Time: 0.002, Error: ""},
 				},
 			})
 		})
@@ -138,7 +138,7 @@ func TestJUnitReport(t *testing.T) {
 				Failures:    1,
 				ElapsedTime: 0,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "[build failed]", Time: 0, Error: "Failed"},
+					{Name: "[build failed]", Time: 0, Error: "Failed"},
 				},
 			})
 		})
@@ -152,8 +152,8 @@ func TestJUnitReport(t *testing.T) {
 				Tests:       2,
 				ElapsedTime: 0.087,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test2", Time: 0.002, Error: ""},
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.085, Error: ""},
+					{Name: "test2", Time: 0.002, Error: ""},
+					{Name: "test1", Time: 0.085, Error: ""},
 				},
 			})
 		})
@@ -165,8 +165,8 @@ func TestJUnitReport(t *testing.T) {
 				Errors:      1,
 				ElapsedTime: 0.109,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test2", Time: 0, Error: "expected:<2> but was:<1>"},
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.109, Error: ""},
+					{Name: "test2", Time: 0, Error: "expected:<2> but was:<1>"},
+					{Name: "test1", Time: 0.109, Error: ""},
 				},
 			})
 		})
@@ -178,10 +178,10 @@ func TestJUnitReport(t *testing.T) {
 				Failures:    2,
 				ElapsedTime: 0.072,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.072,
+					{Name: "test1", Time: 0.072,
 						Error: "Cannot cast object 'foo' with class 'java.lang.String' to class 'int'",
 					},
-					run.JUnitTestcaseResult{Name: "test2", Time: 0,
+					{Name: "test2", Time: 0,
 						Error: "Cannot cast object 'foo' with class 'java.lang.String' to class 'int'",
 					},
 				},
@@ -197,8 +197,8 @@ func TestJUnitReport(t *testing.T) {
 				Tests:       2,
 				ElapsedTime: 0.004,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.003, Error: ""},
-					run.JUnitTestcaseResult{Name: "test2", Time: 0.001, Error: ""},
+					{Name: "test1", Time: 0.003, Error: ""},
+					{Name: "test2", Time: 0.001, Error: ""},
 				},
 			})
 		})
@@ -210,8 +210,8 @@ func TestJUnitReport(t *testing.T) {
 				Errors:      2,
 				ElapsedTime: 0.004,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test2", Time: 0.001, Error: "/ by zero"},
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.003, Error: "/ by zero"},
+					{Name: "test2", Time: 0.001, Error: "/ by zero"},
+					{Name: "test1", Time: 0.003, Error: "/ by zero"},
 				},
 			})
 		})
@@ -223,8 +223,8 @@ func TestJUnitReport(t *testing.T) {
 				Failures:    2,
 				ElapsedTime: 0.005,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test2", Time: 0.001, Error: "expected:<1> but was:<0>"},
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.004, Error: "expected:<55> but was:<5>"},
+					{Name: "test2", Time: 0.001, Error: "expected:<1> but was:<0>"},
+					{Name: "test1", Time: 0.004, Error: "expected:<55> but was:<5>"},
 				},
 			})
 		})
@@ -238,8 +238,8 @@ func TestJUnitReport(t *testing.T) {
 				Tests:       2,
 				ElapsedTime: 0.003,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.001, Error: ""},
-					run.JUnitTestcaseResult{Name: "test2", Time: 0.002, Error: ""},
+					{Name: "test1", Time: 0.001, Error: ""},
+					{Name: "test2", Time: 0.002, Error: ""},
 				},
 			})
 		})
@@ -251,10 +251,10 @@ func TestJUnitReport(t *testing.T) {
 				Failures:    2,
 				ElapsedTime: 0.003,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.002,
+					{Name: "test1", Time: 0.002,
 						Error: "AssertionError [ERR_ASSERTION]: Infinity == 55\n    at Context.<anonymous> (test/exampleSpec.js:7:16)",
 					},
-					run.JUnitTestcaseResult{Name: "test2", Time: 0.001,
+					{Name: "test2", Time: 0.001,
 						Error: "AssertionError [ERR_ASSERTION]: Infinity == 1\n    at Context.<anonymous> (test/exampleSpec.js:10:16)",
 					},
 				},
@@ -270,7 +270,7 @@ func TestJUnitReport(t *testing.T) {
 				Tests:       1,
 				ElapsedTime: 0.001,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test_sum", Time: 0.001, Error: ""},
+					{Name: "test_sum", Time: 0.001, Error: ""},
 				},
 			})
 		})
@@ -282,7 +282,7 @@ func TestJUnitReport(t *testing.T) {
 				Errors:      1,
 				ElapsedTime: 0.005,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test_sum", Time: 0.005, Error: "division by zero"},
+					{Name: "test_sum", Time: 0.005, Error: "division by zero"},
 				},
 			})
 		})
@@ -294,7 +294,7 @@ func TestJUnitReport(t *testing.T) {
 				Failures:    1,
 				ElapsedTime: 0.003,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test_sum", Time: 0.003, Error: "551 != 55.0"},
+					{Name: "test_sum", Time: 0.003, Error: "551 != 55.0"},
 				},
 			})
 		})
@@ -308,7 +308,7 @@ func TestJUnitReport(t *testing.T) {
 				Tests:       1,
 				ElapsedTime: 0.009,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.009, Error: ""},
+					{Name: "test1", Time: 0.009, Error: ""},
 				},
 			})
 		})
@@ -320,7 +320,7 @@ func TestJUnitReport(t *testing.T) {
 				Errors:      1,
 				ElapsedTime: 0.008,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.008, Error: "/ by zero"},
+					{Name: "test1", Time: 0.008, Error: "/ by zero"},
 				},
 			})
 		})
@@ -332,7 +332,7 @@ func TestJUnitReport(t *testing.T) {
 				Failures:    1,
 				ElapsedTime: 0.014,
 				TestResults: []run.JUnitTestcaseResult{
-					run.JUnitTestcaseResult{Name: "test1", Time: 0.014, Error: "expected:<12> but was:<1>"},
+					{Name: "test1", Time: 0.014, Error: "expected:<12> but was:<1>"},
 				},
 			})
 		})
